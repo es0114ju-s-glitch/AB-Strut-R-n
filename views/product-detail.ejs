@@ -1,0 +1,179 @@
+<%- include('partials/header') %>
+
+<div class="container">
+  <!-- Breadcrumb navigation -->
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Hem</a></li>
+      <li class="breadcrumb-item"><a href="/products" class="text-decoration-none">Produkter</a></li>
+      <li class="breadcrumb-item active"><%= product.name %></li>
+    </ol>
+  </nav>
+
+  <div class="row g-5">
+
+    <!-- LEFT COLUMN: Product image -->
+    <div class="col-12 col-md-5">
+      <div class="product-detail-img d-flex align-items-center justify-content-center rounded-3 shadow-sm">
+        <% if (product.category === 'Strutar') { %>
+          <span style="font-size:8rem">🍦</span>
+        <% } else if (product.category === 'Rån') { %>
+          <span style="font-size:8rem">🥐</span>
+        <% } else if (product.category === 'Bägare') { %>
+          <span style="font-size:8rem">🥤</span>
+        <% } else { %>
+          <span style="font-size:8rem">⚙️</span>
+        <% } %>
+      </div>
+
+      <!-- Special note for Rån (e.g. Karnevalsrånet) -->
+      <% if (product.note) { %>
+        <div class="alert alert-warning mt-3">
+          <i class="bi bi-star-fill me-2"></i><%= product.note %>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- RIGHT COLUMN: Product info + order form -->
+    <div class="col-12 col-md-7">
+      
+      <span class="badge bg-dark mb-2"><%= product.category %></span>
+      <h1 class="fw-bold mb-2" style="font-family:'Fraunces',serif"><%= product.name %></h1>
+      
+      <!-- Price -->
+      <p class="fs-2 fw-bold text-dark mb-1">
+        <%= product.price.toLocaleString('sv-SE') %> kr
+        <small class="fs-6 text-muted fw-normal">exkl. moms / förpackning</small>
+      </p>
+
+      <!-- Stock badge -->
+      <div class="mb-4">
+        <% if (product.stock === 0) { %>
+          <span class="badge bg-danger fs-6">
+            <i class="bi bi-x-circle me-1"></i>Slut i lager
+          </span>
+        <% } else if (product.stock < 20) { %>
+          <span class="badge bg-warning text-dark fs-6">
+            <i class="bi bi-exclamation-circle me-1"></i>Få kvar — <%= product.stock %> förpackningar
+          </span>
+        <% } else { %>
+          <span class="badge bg-success fs-6">
+            <i class="bi bi-check-circle me-1"></i>I lager — <%= product.stock %> förpackningar
+          </span>
+        <% } %>
+      </div>
+
+      <p class="text-muted mb-4"><%= product.description %></p>
+
+      <!-- ====================================================================
+           ORDER FORM
+           This form POSTs to /cart/add with product details.
+           The form only shows size/angle options for relevant categories.
+           ==================================================================== -->
+      <% if (product.stock > 0) { %>
+        <form action="/cart/add" method="POST" class="bg-light rounded-3 p-4 border">
+          <!-- Hidden field: tells the controller WHICH product is being added -->
+          <input type="hidden" name="productId" value="<%= product.id %>">
+
+          <!-- ==================================================================
+               STRUT SIZE SELECTOR
+               WHY 16 SIZES?
+               Soft-serve ice cream machines have different cone exit diameters.
+               A cone that's too small falls through; too big won't fit the holder.
+               Professional kiosk owners know their machine's diameter and must
+               order the matching cone size. 45mm (smallest) to 120mm (largest)
+               covers all commercial machines used in Sweden.
+               ================================================================== -->
+          <% if (product.category === 'Strutar' && product.availableSizes) { %>
+            <div class="mb-3">
+              <label for="size" class="form-label fw-semibold">
+                Välj storlek (strutens diameter)
+              </label>
+              <select class="form-select" name="size" id="size" required>
+                <option value="">-- Välj storlek --</option>
+                <option value="45mm">45mm – Miniatyr (barnportioner)</option>
+                <option value="52mm">52mm – Liten</option>
+                <option value="57mm">57mm – Liten standard</option>
+                <option value="60mm">60mm – Kompakt</option>
+                <option value="65mm">65mm – Mellanstor</option>
+                <option value="70mm">70mm – Vanlig (äldre maskiner)</option>
+                <option value="75mm">75mm – Standard (passar de flesta maskiner)</option>
+                <option value="80mm">80mm – Standard plus</option>
+                <option value="85mm">85mm – Stor standard</option>
+                <option value="90mm">90mm – Stor</option>
+                <option value="95mm">95mm – Extra stor</option>
+                <option value="100mm">100mm – Professional</option>
+                <option value="105mm">105mm – Professional plus</option>
+                <option value="110mm">110mm – Industrial</option>
+                <option value="115mm">115mm – Industrial plus</option>
+                <option value="120mm">120mm – Maximal (storvolymsmaskiner)</option>
+              </select>
+              <div class="form-text">
+                <i class="bi bi-info-circle me-1"></i>
+                Osäker på storleken? Kolla i din maskins manual eller ring oss på 040-12 34 56.
+              </div>
+            </div>
+          <% } %>
+
+          <!-- ==================================================================
+               RÅN SIZE + ANGLE SELECTOR
+               Rånar (wafer rolls) vary by two dimensions:
+               - Size: how many ice cream scoops they hold
+               - Angle: how wide the cone opening is (affects ice cream presentation)
+               ================================================================== -->
+          <% if (product.category === 'Rån' && product.sizes) { %>
+            <div class="mb-3">
+              <label for="size" class="form-label fw-semibold">Välj storlek</label>
+              <select class="form-select" name="size" id="size" required>
+                <option value="">-- Välj storlek --</option>
+                <% product.sizes.forEach(function(s) { %>
+                  <option value="<%= s %>"><%= s %></option>
+                <% }); %>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="angle" class="form-label fw-semibold">Välj vinkel</label>
+              <select class="form-select" name="angle" id="angle" required>
+                <option value="">-- Välj vinkel --</option>
+                <% product.angles.forEach(function(a) { %>
+                  <option value="<%= a %>"><%= a %></option>
+                <% }); %>
+              </select>
+              <div class="form-text">
+                Smal = traditionell glasskiosk-look. Bred = mer öppen, passar rånar med toppings.
+              </div>
+            </div>
+          <% } %>
+
+          <!-- Quantity -->
+          <div class="mb-4">
+            <label for="quantity" class="form-label fw-semibold">Antal förpackningar</label>
+            <input type="number" class="form-control" name="quantity" id="quantity"
+                   value="1" min="1" max="999" style="max-width:120px">
+          </div>
+
+          <!-- Submit button — btn-lg for easier tapping on phones -->
+          <button type="submit" class="btn btn-warning btn-lg fw-semibold me-2">
+            <i class="bi bi-cart-plus me-2"></i>Lägg i kundvagn
+          </button>
+          <a href="/products" class="btn btn-outline-secondary btn-lg">
+            <i class="bi bi-arrow-left me-1"></i>Tillbaka
+          </a>
+        </form>
+
+      <% } else { %>
+        <!-- Out of stock — show a contact prompt instead of the order form -->
+        <div class="alert alert-danger">
+          <h5><i class="bi bi-x-circle me-2"></i>Slut i lager</h5>
+          <p class="mb-0">Kontakta oss för att beställa eller bli notifierad när produkten är tillbaka.</p>
+          <a href="tel:040123456" class="btn btn-danger mt-3">
+            <i class="bi bi-telephone me-2"></i>Ring oss: 040-12 34 56
+          </a>
+        </div>
+      <% } %>
+
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

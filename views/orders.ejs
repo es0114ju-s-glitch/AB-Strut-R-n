@@ -1,0 +1,199 @@
+<%- include('partials/header') %>
+
+<div class="container">
+  <h1 class="fw-bold mb-2" style="font-family:'Fraunces',serif">
+    <i class="bi bi-clock-history me-2 text-warning"></i>Mina ordrar
+  </h1>
+  <p class="text-muted mb-4">Ange ditt kundnummer för att se din orderhistorik.</p>
+
+  <!-- ========================================================================
+       CUSTOMER NUMBER SEARCH FORM
+       This is a simple GET form — the kundnummer is added to the URL as
+       ?customer=K1042 so it can be bookmarked or shared.
+       ======================================================================== -->
+  <div class="card border-0 shadow-sm mb-5">
+    <div class="card-body p-4">
+      <form action="/orders" method="GET" class="row g-3 align-items-end">
+        <div class="col-12 col-md-6">
+          <label for="customer" class="form-label fw-semibold">Kundnummer</label>
+          <input type="text" class="form-control form-control-lg" 
+                 id="customer" name="customer"
+                 value="<%= customerNumber %>"
+                 placeholder="T.ex. K1042">
+        </div>
+        <div class="col-12 col-md-auto">
+          <button type="submit" class="btn btn-warning btn-lg w-100">
+            <i class="bi bi-search me-2"></i>Sök ordrar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Only show results if the user has searched -->
+  <% if (searched) { %>
+    
+    <% if (orders.length === 0) { %>
+      <!-- No orders found for this customer number -->
+      <div class="text-center py-5">
+        <div class="fs-1 mb-3">🔍</div>
+        <h4 class="text-muted">Inga ordrar hittades</h4>
+        <p class="text-muted">
+          Inget kundnummer <strong>"<%= customerNumber %>"</strong> hittades i systemet.
+          Kontrollera numret eller ring oss på 040-12 34 56.
+        </p>
+      </div>
+
+    <% } else { %>
+
+      <h4 class="fw-semibold mb-3">
+        <%= orders.length %> order(s) för kundnummer <strong><%= customerNumber %></strong>
+      </h4>
+
+      <!-- ====================================================================
+           ORDER LIST — Bootstrap Accordion (expandable/collapsible)
+           Each order is a collapsible panel showing summary + details.
+           accordion-item collapses/expands when header is clicked.
+           ==================================================================== -->
+      <div class="accordion shadow-sm" id="ordersAccordion">
+
+        <% orders.forEach(function(order, i) { %>
+          
+          <div class="accordion-item border-0 mb-3 rounded-3 overflow-hidden shadow-sm">
+            
+            <!-- Accordion header — always visible -->
+            <h2 class="accordion-header">
+              <button class="accordion-button <%= i > 0 ? 'collapsed' : '' %> bg-white fw-semibold"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#order-<%= i %>">
+                
+                <div class="d-flex flex-wrap align-items-center gap-3 w-100 me-3">
+                  <!-- Order ID -->
+                  <span class="font-monospace small text-muted"><%= order.orderId %></span>
+                  
+                  <!-- Company name -->
+                  <span class="fw-bold"><%= order.companyName %></span>
+                  
+                  <!-- Date -->
+                  <span class="text-muted small">
+                    <i class="bi bi-calendar3 me-1"></i>
+                    <%= new Date(order.createdAt).toLocaleDateString('sv-SE') %>
+                  </span>
+                  
+                  <!-- Total -->
+                  <span class="fw-bold ms-auto">
+                    <%= order.totalPrice.toLocaleString('sv-SE') %> kr
+                  </span>
+
+                  <!-- ============================================================
+                       DELIVERY STATUS BADGE
+                       Colour reflects the order's current stage in the process.
+                       The admin panel (GET /admin) is where staff update these.
+                       ============================================================ -->
+                  <%
+                    let badgeClass = 'bg-secondary'; // Mottagen (received) — grey
+                    if (order.status === 'Behandlas') badgeClass = 'bg-primary';    // Processing — blue
+                    if (order.status === 'Skickad')   badgeClass = 'bg-warning text-dark'; // Shipped — yellow
+                    if (order.status === 'Levererad') badgeClass = 'bg-success';   // Delivered — green
+                  %>
+                  <span class="badge <%= badgeClass %>"><%= order.status %></span>
+                </div>
+              </button>
+            </h2>
+
+            <!-- Accordion body — collapsed by default (except first order) -->
+            <div id="order-<%= i %>" 
+                 class="accordion-collapse collapse <%= i === 0 ? 'show' : '' %>"
+                 data-bs-parent="#ordersAccordion">
+              
+              <div class="accordion-body p-4">
+                
+                <!-- Order meta info -->
+                <div class="row g-3 mb-4">
+                  <div class="col-6 col-md-3">
+                    <div class="text-muted small">Beräknad leverans</div>
+                    <div class="fw-semibold text-success">
+                      <i class="bi bi-truck me-1"></i><%= order.estimatedDelivery %>
+                    </div>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <div class="text-muted small">Leveransadress</div>
+                    <div class="small"><%= order.deliveryAddress %></div>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <div class="text-muted small">E-post</div>
+                    <div class="small"><%= order.email %></div>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <div class="text-muted small">Telefon</div>
+                    <div class="small"><%= order.phone %></div>
+                  </div>
+                </div>
+
+                <!-- Items table -->
+                <div class="table-responsive mb-4">
+                  <table class="table table-sm table-hover">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Produkt</th>
+                        <th class="text-center">Antal</th>
+                        <th class="text-end">À-pris</th>
+                        <th class="text-end">Summa</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% order.items.forEach(function(item) { %>
+                        <tr>
+                          <td>
+                            <%= item.name %>
+                            <% if (item.size) { %><small class="text-muted ms-1">(<%= item.size %>)</small><% } %>
+                            <% if (item.angle) { %><small class="text-muted ms-1">(<%= item.angle %>)</small><% } %>
+                          </td>
+                          <td class="text-center"><%= item.quantity %></td>
+                          <td class="text-end"><%= item.unitPrice.toLocaleString('sv-SE') %> kr</td>
+                          <td class="text-end"><%= item.subtotal.toLocaleString('sv-SE') %> kr</td>
+                        </tr>
+                      <% }); %>
+                    </tbody>
+                    <tfoot class="table-light">
+                      <tr>
+                        <td colspan="3" class="text-end fw-bold">Totalt exkl. moms</td>
+                        <td class="text-end fw-bold"><%= order.totalPrice.toLocaleString('sv-SE') %> kr</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+
+                <!-- ============================================================
+                     BESTÄLL IGEN BUTTON
+                     This is the core B2B repeat-order feature.
+                     It POSTs to /reorder/:orderId which copies all items from
+                     this order into the current session cart.
+                     
+                     Solves the real business problem: customers calling saying
+                     "Vi vill ha likadana som förra gången" — now they just click.
+                     ============================================================ -->
+                <form action="/reorder/<%= order.orderId %>" method="POST" class="d-inline">
+                  <button type="submit" class="btn btn-warning btn-lg fw-semibold">
+                    <i class="bi bi-arrow-repeat me-2"></i>Beställ igen
+                  </button>
+                </form>
+
+                <a href="/confirmation/<%= order.orderId %>" class="btn btn-outline-secondary btn-lg ms-2">
+                  <i class="bi bi-receipt me-1"></i>Visa kvitto
+                </a>
+
+              </div>
+            </div>
+          </div>
+
+        <% }); %>
+      </div>
+
+    <% } %>
+  <% } %>
+
+</div>
+
+<%- include('partials/footer') %>

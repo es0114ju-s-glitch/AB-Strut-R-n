@@ -1,0 +1,20 @@
+{
+  "name": "ab-strut-ran",
+  "version": "1.0.0",
+  "description": "B2B e-commerce site for AB Strut & Rån — ice cream supply company. Built with Node.js, Express, and EJS using the MVC pattern.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js"
+  },
+  "dependencies": {
+    "ejs": "^3.1.9",
+    "express": "^4.22.1",
+    "express-session": "^1.17.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "Student Project",
+  "license": "MIT"
+}

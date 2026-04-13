@@ -1,0 +1,166 @@
+<%- include('partials/header') %>
+
+<div class="container" style="max-width:800px">
+  <h1 class="fw-bold mb-2" style="font-family:'Fraunces',serif">Kassa</h1>
+  <p class="text-muted mb-4"><%= cart.length %> produkt(er) · Total: <%= total.toLocaleString('sv-SE') %> kr exkl. moms</p>
+
+  <!--
+    action="/checkout" method="POST" sends the form data to cartController.processCheckout()
+    All form fields' name="" attributes become keys in req.body on the server.
+  -->
+  <form action="/checkout" method="POST" class="needs-validation" novalidate>
+    
+    <!-- ======================================================================
+         SECTION 1: Company info
+         ====================================================================== -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h5 class="fw-bold mb-4">
+          <i class="bi bi-building me-2 text-warning"></i>Företagsinformation
+        </h5>
+        
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <label for="companyName" class="form-label fw-semibold">Företagsnamn *</label>
+            <input type="text" class="form-control form-control-lg" 
+                   id="companyName" name="companyName" 
+                   placeholder="T.ex. Lomma Beach Kiosk AB" required>
+          </div>
+          <div class="col-12 col-md-6">
+            <label for="customerNumber" class="form-label fw-semibold">Kundnummer *</label>
+            <input type="text" class="form-control form-control-lg" 
+                   id="customerNumber" name="customerNumber"
+                   placeholder="T.ex. K1042" required>
+            <div class="form-text">Hittar du ditt kundnummer på din senaste faktura.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         SECTION 2: Addresses
+         ====================================================================== -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h5 class="fw-bold mb-4">
+          <i class="bi bi-geo-alt me-2 text-warning"></i>Adresser
+        </h5>
+        
+        <div class="mb-3">
+          <label for="deliveryAddress" class="form-label fw-semibold">Leveransadress *</label>
+          <input type="text" class="form-control form-control-lg" 
+                 id="deliveryAddress" name="deliveryAddress"
+                 placeholder="Gatuadress, postnummer, stad" required>
+        </div>
+
+        <!-- Checkbox to copy delivery address to invoice address -->
+        <div class="form-check mb-3">
+          <input type="checkbox" class="form-check-input" 
+                 id="sameAddress" name="sameAddress" value="yes"
+                 checked onchange="toggleInvoiceAddress(this)">
+          <label class="form-check-label" for="sameAddress">
+            Fakturaadress samma som leveransadress
+          </label>
+        </div>
+
+        <!-- Invoice address field — hidden by default (same as delivery) -->
+        <div id="invoiceAddressDiv" class="d-none">
+          <label for="invoiceAddress" class="form-label fw-semibold">Fakturaadress</label>
+          <input type="text" class="form-control form-control-lg" 
+                 id="invoiceAddress" name="invoiceAddress"
+                 placeholder="Fakturaadress om annan än leveransadress">
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         SECTION 3: Contact details
+         ====================================================================== -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h5 class="fw-bold mb-4">
+          <i class="bi bi-person me-2 text-warning"></i>Kontaktuppgifter
+        </h5>
+        
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <label for="email" class="form-label fw-semibold">E-post *</label>
+            <input type="email" class="form-control form-control-lg" 
+                   id="email" name="email"
+                   placeholder="info@dinverksamhet.se" required>
+          </div>
+          <div class="col-12 col-md-6">
+            <label for="phone" class="form-label fw-semibold">Telefon *</label>
+            <input type="tel" class="form-control form-control-lg" 
+                   id="phone" name="phone"
+                   placeholder="040-123456" required>
+          </div>
+          <div class="col-12">
+            <label for="message" class="form-label fw-semibold">Meddelande (valfritt)</label>
+            <textarea class="form-control" id="message" name="message" rows="3"
+                      placeholder="T.ex. leveransinstruktioner, önskad leveranstid..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         ORDER SUMMARY (mini version)
+         ====================================================================== -->
+    <div class="card border-warning border-2 mb-4">
+      <div class="card-body p-4">
+        <h5 class="fw-bold mb-3">
+          <i class="bi bi-receipt me-2 text-warning"></i>Din beställning
+        </h5>
+        <% cart.forEach(function(item) { %>
+          <div class="d-flex justify-content-between mb-1">
+            <span>
+              <%= item.name %>
+              <% if (item.size) { %><small class="text-muted">(<%=item.size%>)</small><% } %>
+              <% if (item.angle) { %><small class="text-muted">(<%=item.angle%>)</small><% } %>
+              × <%= item.quantity %>
+            </span>
+            <span><%= item.subtotal.toLocaleString('sv-SE') %> kr</span>
+          </div>
+        <% }); %>
+        <hr>
+        <div class="d-flex justify-content-between fw-bold">
+          <span>Totalt exkl. moms</span>
+          <span><%= total.toLocaleString('sv-SE') %> kr</span>
+        </div>
+        <div class="d-flex justify-content-between text-muted small mt-1">
+          <span>Totalt inkl. moms (25%)</span>
+          <span><%= Math.round(total * 1.25).toLocaleString('sv-SE') %> kr</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit button — btn-lg for larger tap targets -->
+    <div class="d-grid mb-5">
+      <button type="submit" class="btn btn-warning btn-lg fw-bold py-3">
+        <i class="bi bi-bag-check me-2"></i>Skicka beställning
+      </button>
+    </div>
+
+  </form>
+</div>
+
+<!-- JavaScript for the "same address" checkbox -->
+<script>
+  function toggleInvoiceAddress(checkbox) {
+    const div = document.getElementById('invoiceAddressDiv');
+    const input = document.getElementById('invoiceAddress');
+    
+    if (checkbox.checked) {
+      // Same address — hide the invoice field (not needed)
+      div.classList.add('d-none');
+      input.removeAttribute('required');
+    } else {
+      // Different address — show and require the invoice field
+      div.classList.remove('d-none');
+      input.setAttribute('required', 'required');
+    }
+  }
+</script>
+
+<%- include('partials/footer') %>

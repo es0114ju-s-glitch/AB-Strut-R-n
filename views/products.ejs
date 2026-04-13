@@ -1,0 +1,191 @@
+<%- include('partials/header') %>
+
+<div class="container">
+  <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
+    <div>
+      <h1 class="fw-bold mb-1" style="font-family:'Fraunces',serif">Produkter</h1>
+      <p class="text-muted mb-0"><%= products.length %> produkter totalt</p>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       CATEGORY FILTER BUTTONS
+       These buttons filter the product grid WITHOUT reloading the page.
+       They use HTML data-category attributes + vanilla JavaScript below.
+       ======================================================================== -->
+  <div class="d-flex flex-wrap gap-2 mb-4" id="filter-buttons">
+    <button class="btn btn-dark active filter-btn" data-category="alla">
+      <i class="bi bi-grid me-1"></i> Alla produkter
+    </button>
+    <button class="btn btn-outline-dark filter-btn" data-category="Strutar">
+      🍦 Strutar
+    </button>
+    <button class="btn btn-outline-dark filter-btn" data-category="Rån">
+      🥐 Rån
+    </button>
+    <button class="btn btn-outline-dark filter-btn" data-category="Bägare">
+      🥤 Bägare
+    </button>
+    <button class="btn btn-outline-dark filter-btn" data-category="Glassmaskiner">
+      ⚙️ Glassmaskiner
+    </button>
+  </div>
+
+  <!-- ========================================================================
+       PRODUCT GRID
+       Bootstrap classes:
+         col-12     = full width on phones (< 576px)
+         col-md-6   = 2 columns on tablets (≥ 768px)
+         col-lg-4   = 3 columns on desktop (≥ 992px)
+       
+       data-category is used by the JS filter below to show/hide cards.
+       ======================================================================== -->
+  <div class="row g-4" id="product-grid">
+    
+    <% products.forEach(function(product) { %>
+      
+      <!-- Each product card has data-category so JS can show/hide it -->
+      <div class="col-12 col-md-6 col-lg-4 product-item" data-category="<%= product.category %>">
+        <div class="card h-100 border-0 shadow-sm product-card">
+          
+          <!-- Image placeholder -->
+          <div class="card-img-top product-img-placeholder d-flex align-items-center justify-content-center">
+            <% if (product.category === 'Strutar') { %>
+              <span style="font-size:3rem">🍦</span>
+            <% } else if (product.category === 'Rån') { %>
+              <span style="font-size:3rem">🥐</span>
+            <% } else if (product.category === 'Bägare') { %>
+              <span style="font-size:3rem">🥤</span>
+            <% } else { %>
+              <span style="font-size:3rem">⚙️</span>
+            <% } %>
+          </div>
+
+          <div class="card-body d-flex flex-column">
+            <!-- Category badge -->
+            <span class="badge bg-light text-dark mb-2 align-self-start border">
+              <%= product.category %>
+            </span>
+
+            <h5 class="card-title" style="font-family:'Fraunces',serif">
+              <%= product.name %>
+            </h5>
+            
+            <!-- Price -->
+            <p class="fw-bold fs-5 mb-2 text-dark">
+              <%= product.price.toLocaleString('sv-SE') %> kr
+              <small class="text-muted fw-normal fs-6">exkl. moms</small>
+            </p>
+
+            <!-- ================================================================
+                 STOCK STATUS BADGE
+                 Green  = In stock (≥ 20 units)
+                 Yellow = Low stock (1–19 units)  
+                 Red    = Out of stock (0 units)
+                 This solves the original problem: customers no longer need to
+                 call to check stock levels — it's shown live on the site.
+                 ================================================================ -->
+            <div class="mb-3">
+              <% if (product.stock === 0) { %>
+                <span class="badge bg-danger">
+                  <i class="bi bi-x-circle me-1"></i>Slut i lager
+                </span>
+              <% } else if (product.stock < 20) { %>
+                <span class="badge bg-warning text-dark">
+                  <i class="bi bi-exclamation-circle me-1"></i>Få kvar (<%= product.stock %> st)
+                </span>
+              <% } else { %>
+                <span class="badge bg-success">
+                  <i class="bi bi-check-circle me-1"></i>I lager (<%= product.stock %> st)
+                </span>
+              <% } %>
+            </div>
+
+            <!-- Spacer to push button to bottom of card -->
+            <div class="mt-auto">
+              <a href="/products/<%= product.id %>" class="btn btn-dark w-100">
+                Visa produkt <i class="bi bi-arrow-right ms-1"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <% }); %>
+  </div>
+
+  <!-- Shown when no products match the filter -->
+  <div id="no-results" class="d-none text-center py-5">
+    <div class="fs-1 mb-3">🔍</div>
+    <p class="text-muted">Inga produkter hittades i den kategorin.</p>
+  </div>
+
+</div>
+
+<!-- ============================================================================
+     CATEGORY FILTER JAVASCRIPT
+     This small script handles filtering without a page reload.
+     
+     HOW IT WORKS:
+     1. User clicks a filter button → we read its data-category attribute
+     2. Loop over ALL product cards → show those matching the category, hide others
+     3. Update button styles to show which is active
+     
+     This is intentionally simple vanilla JavaScript — no frameworks needed.
+     ============================================================================ -->
+<script>
+  // Get all filter buttons and all product cards
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const productItems  = document.querySelectorAll('.product-item');
+  const noResults     = document.getElementById('no-results');
+
+  filterButtons.forEach(function(button) {
+    button.addEventListener('click', function() {
+      const selectedCategory = this.getAttribute('data-category');
+
+      // Update active button style
+      filterButtons.forEach(function(btn) {
+        btn.classList.remove('active', 'btn-dark');
+        btn.classList.add('btn-outline-dark');
+      });
+      this.classList.add('active', 'btn-dark');
+      this.classList.remove('btn-outline-dark');
+
+      // Show/hide product cards based on category
+      let visibleCount = 0;
+
+      productItems.forEach(function(item) {
+        const itemCategory = item.getAttribute('data-category');
+
+        if (selectedCategory === 'alla' || itemCategory === selectedCategory) {
+          // Show this card
+          item.classList.remove('d-none');
+          visibleCount++;
+        } else {
+          // Hide this card
+          item.classList.add('d-none');
+        }
+      });
+
+      // Show "no results" message if nothing matches
+      if (visibleCount === 0) {
+        noResults.classList.remove('d-none');
+      } else {
+        noResults.classList.add('d-none');
+      }
+    });
+  });
+
+  // Check if a category was passed via URL query string (?category=Strutar)
+  // This lets the home page category links pre-select a filter
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlCategory = urlParams.get('category');
+  if (urlCategory) {
+    const matchingBtn = document.querySelector('[data-category="' + urlCategory + '"]');
+    if (matchingBtn) {
+      matchingBtn.click(); // Trigger the click to activate the filter
+    }
+  }
+</script>
+
+<%- include('partials/footer') %>

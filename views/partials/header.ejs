@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- viewport meta is CRITICAL for responsive design on phones/tablets -->
+  <title><%= title %></title>
+
+  <!-- Bootstrap 5 CSS — provides the responsive grid system and components -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Bootstrap Icons — for cart icon, badge icons etc -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Our custom CSS — small overrides and responsive tweaks -->
+  <link href="/css/custom.css" rel="stylesheet">
+
+  <!-- Google Fonts: Fraunces (display) + DM Sans (body) -->
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ==========================================================================
+     NAVBAR
+     Bootstrap's navbar automatically collapses to a hamburger menu on small
+     screens. The data-bs-toggle="collapse" button triggers this behaviour.
+     
+     navbar-expand-md = show full navbar on medium+ screens, hamburger on small
+     ========================================================================== -->
+<nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top shadow-sm">
+  <div class="container">
+    
+    <!-- Logo / Brand link -->
+    <a class="navbar-brand fw-bold" href="/">
+      <span class="text-warning">🍦</span> AB Strut&Rån
+    </a>
+
+    <!-- Hamburger button — only visible on small screens (mobile) -->
+    <!-- data-bs-target="#navMenu" tells Bootstrap WHICH div to collapse/expand -->
+    <button class="navbar-toggler" type="button"
+            data-bs-toggle="collapse" data-bs-target="#navMenu"
+            aria-controls="navMenu" aria-expanded="false"
+            aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Collapsible menu — hidden on mobile, shown on md+ screens -->
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto mb-2 mb-md-0">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Hem</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/products">Produkter</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/orders">Mina ordrar</a>
+        </li>
+        <li class="nav-item">
+          <!-- Cart link with item count badge -->
+          <!-- cartCount is passed from every controller via res.render() -->
+          <a class="nav-link position-relative" href="/cart">
+            <i class="bi bi-cart3"></i> Kundvagn
+            <% if (cartCount > 0) { %>
+              <!-- Badge shows number of items in cart -->
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">
+                <%= cartCount %>
+              </span>
+            <% } %>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Main content starts here — pages wrap their content in this tag -->
+<main class="py-4">

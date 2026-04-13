@@ -1,0 +1,146 @@
+<%- include('partials/header') %>
+
+<div class="container-fluid px-0">
+
+  <!-- ========================================================================
+       HERO SECTION
+       Full-width banner with welcome message. Uses Bootstrap's utility classes
+       for vertical centering and spacing. The Swedish text is intentional —
+       this is a B2B site for Swedish customers.
+       ======================================================================== -->
+  <section class="hero-banner text-white text-center d-flex align-items-center justify-content-center">
+    <div class="hero-overlay"></div>
+    <div class="position-relative z-1 px-3">
+      <p class="text-warning fw-semibold text-uppercase letter-spacing mb-2" style="letter-spacing:0.15em">Sedan 1987</p>
+      <h1 class="display-3 fw-bold mb-3" style="font-family:'Fraunces',serif">
+        Glassprodukter för&nbsp;proffs
+      </h1>
+      <p class="lead mb-4 mx-auto" style="max-width:560px">
+        Strutar, rån, bägare och mjukglasmaskiner — allt du behöver för en lönsam glassstation. Realtidspriser och lagerstatus, alltid uppdaterat.
+      </p>
+      <div class="d-flex flex-wrap gap-3 justify-content-center">
+        <!-- btn-lg gives larger tap targets — important for kiosk workers using phones/tablets -->
+        <a href="/products" class="btn btn-warning btn-lg fw-semibold px-4">
+          <i class="bi bi-grid me-2"></i>Se alla produkter
+        </a>
+        <a href="/orders" class="btn btn-outline-light btn-lg px-4">
+          <i class="bi bi-clock-history me-2"></i>Mina ordrar
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       USP STRIPS — three value propositions
+       col-12 col-md-4 = stacks vertically on mobile, 3-col on desktop
+       ======================================================================== -->
+  <section class="bg-warning py-3">
+    <div class="container">
+      <div class="row text-center text-dark g-3">
+        <div class="col-12 col-md-4">
+          <i class="bi bi-lightning-charge-fill fs-4 me-2"></i>
+          <strong>Alltid uppdaterat lager</strong>
+        </div>
+        <div class="col-12 col-md-4">
+          <i class="bi bi-truck fs-4 me-2"></i>
+          <strong>Leverans inom 3 dagar</strong>
+        </div>
+        <div class="col-12 col-md-4">
+          <i class="bi bi-headset fs-4 me-2"></i>
+          <strong>Teknisk support för maskiner</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="container mt-5">
+
+  <!-- ========================================================================
+       VECKANS ERBJUDANDEN (Featured products)
+       Shows one product per category that is currently in stock.
+       EJS forEach loop iterates over the 'featured' array from the controller.
+       ======================================================================== -->
+  <section class="mb-5">
+    <div class="d-flex align-items-center mb-4">
+      <div class="me-3">
+        <span class="badge bg-warning text-dark fs-6 px-3 py-2">🌟 Veckans erbjudanden</span>
+      </div>
+      <hr class="flex-grow-1">
+    </div>
+
+    <div class="row g-4">
+      <!-- Loop over each featured product -->
+      <% featured.forEach(function(product) { %>
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="card h-100 shadow-sm border-0 product-card">
+            
+            <!-- Product image placeholder (real images would go in /public/images) -->
+            <div class="card-img-top product-img-placeholder d-flex align-items-center justify-content-center">
+              <!-- Category emoji as placeholder -->
+              <% if (product.category === 'Strutar') { %>
+                <span style="font-size:4rem">🍦</span>
+              <% } else if (product.category === 'Rån') { %>
+                <span style="font-size:4rem">🥐</span>
+              <% } else if (product.category === 'Bägare') { %>
+                <span style="font-size:4rem">🥤</span>
+              <% } else { %>
+                <span style="font-size:4rem">⚙️</span>
+              <% } %>
+            </div>
+
+            <div class="card-body d-flex flex-column">
+              <span class="badge bg-light text-dark mb-2 align-self-start"><%= product.category %></span>
+              <h5 class="card-title" style="font-family:'Fraunces',serif"><%= product.name %></h5>
+              <p class="text-muted small flex-grow-1"><%= product.description.substring(0, 80) %>…</p>
+              <div class="d-flex align-items-center justify-content-between mt-3">
+                <span class="fw-bold fs-5 text-dark"><%= product.price.toLocaleString('sv-SE') %> kr</span>
+                <a href="/products/<%= product.id %>" class="btn btn-sm btn-dark">Visa</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       CATEGORY QUICK LINKS
+       ======================================================================== -->
+  <section class="mb-5">
+    <h2 class="fw-bold mb-4" style="font-family:'Fraunces',serif">Produktkategorier</h2>
+    <div class="row g-3">
+      <% 
+        const cats = [
+          { name: 'Strutar', emoji: '🍦', desc: '16 storlekar för alla maskiner' },
+          { name: 'Rån', emoji: '🥐', desc: 'Waferrånar i olika vinklar' },
+          { name: 'Bägare', emoji: '🥤', desc: '150ml–400ml pappersbägare' },
+          { name: 'Glassmaskiner', emoji: '⚙️', desc: 'Maskiner, rengöring & reservdelar' }
+        ];
+        cats.forEach(function(cat) {
+      %>
+        <div class="col-6 col-md-3">
+          <a href="/products?category=<%= cat.name %>" class="text-decoration-none">
+            <div class="card text-center h-100 border-0 shadow-sm cat-card p-3">
+              <div class="fs-2 mb-2"><%= cat.emoji %></div>
+              <div class="fw-semibold"><%= cat.name %></div>
+              <div class="text-muted small"><%= cat.desc %></div>
+            </div>
+          </a>
+        </div>
+      <% }); %>
+    </div>
+  </section>
+
+  <!-- B2B info strip -->
+  <div class="alert alert-dark border-0 d-flex align-items-center gap-3 mb-5">
+    <i class="bi bi-info-circle-fill fs-4 text-warning"></i>
+    <div>
+      <strong>Endast för B2B-kunder.</strong> Alla priser är exkl. moms. Har du frågor? Ring <strong>040-12 34 56</strong> eller beställ direkt online.
+    </div>
+  </div>
+
+</div>
+
+<%- include('partials/footer') %>

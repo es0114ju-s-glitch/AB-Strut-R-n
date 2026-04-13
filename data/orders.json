@@ -1,0 +1,54 @@
+[
+  {
+    "orderId": "ORD-1776081002701",
+    "companyName": "",
+    "customerNumber": "",
+    "items": [
+      {
+        "productId": 1,
+        "name": "Klassisk Strut – Standard",
+        "category": "Strutar",
+        "size": "52mm",
+        "angle": null,
+        "quantity": 1,
+        "unitPrice": 59,
+        "subtotal": 59
+      }
+    ],
+    "totalPrice": 59,
+    "deliveryAddress": "",
+    "invoiceAddress": "",
+    "email": "",
+    "phone": "",
+    "message": "",
+    "status": "Mottagen",
+    "createdAt": "2026-04-13T11:50:02.701Z",
+    "estimatedDelivery": "2026-04-16"
+  },
+  {
+    "orderId": "ORD-1776081061217",
+    "companyName": "",
+    "customerNumber": "123",
+    "items": [
+      {
+        "productId": 1,
+        "name": "Klassisk Strut – Standard",
+        "category": "Strutar",
+        "size": "52mm",
+        "angle": null,
+        "quantity": 1,
+        "unitPrice": 59,
+        "subtotal": 59
+      }
+    ],
+    "totalPrice": 59,
+    "deliveryAddress": "",
+    "invoiceAddress": "",
+    "email": "",
+    "phone": "",
+    "message": "",
+    "status": "Mottagen",
+    "createdAt": "2026-04-13T11:51:01.217Z",
+    "estimatedDelivery": "2026-04-16"
+  }
+]

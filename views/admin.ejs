@@ -1,0 +1,160 @@
+<%- include('partials/header') %>
+
+<div class="container-fluid px-4">
+  <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
+    <div>
+      <h1 class="fw-bold mb-1" style="font-family:'Fraunces',serif">
+        <i class="bi bi-gear me-2 text-warning"></i>Admin – Orderhantering
+      </h1>
+      <p class="text-muted mb-0">
+        <%= orders.length %> order(s) totalt. Uppdatera leveransstatus här — kunder ser sin status via "Mina ordrar".
+      </p>
+    </div>
+    <span class="badge bg-danger fs-6 px-3 py-2">
+      <i class="bi bi-shield-lock me-1"></i>Intern vy
+    </span>
+  </div>
+
+  <!-- Status summary stats -->
+  <div class="row g-3 mb-5">
+    <%
+      const statuses = ['Mottagen', 'Behandlas', 'Skickad', 'Levererad'];
+      const statusColors = {
+        'Mottagen': 'secondary',
+        'Behandlas': 'primary',
+        'Skickad': 'warning',
+        'Levererad': 'success'
+      };
+    %>
+    <% statuses.forEach(function(s) { %>
+      <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+          <div class="fs-2 fw-bold text-<%= statusColors[s] %>">
+            <%= orders.filter(o => o.status === s).length %>
+          </div>
+          <div class="text-muted small"><%= s %></div>
+        </div>
+      </div>
+    <% }); %>
+  </div>
+
+  <!-- ========================================================================
+       ORDERS TABLE
+       table-responsive = horizontal scroll on mobile/tablet
+       Each row has a status dropdown that immediately submits a form to update
+       the order's status in orders.json.
+       ======================================================================== -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th>Ordernummer</th>
+              <th>Företag</th>
+              <th>Kundnr</th>
+              <th>Datum</th>
+              <th>Produkter</th>
+              <th class="text-end">Totalt</th>
+              <th>Status</th>
+              <th>Leverans</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (orders.length === 0) { %>
+              <tr>
+                <td colspan="8" class="text-center text-muted py-5">
+                  Inga ordrar registrerade ännu.
+                </td>
+              </tr>
+            <% } %>
+
+            <% orders.forEach(function(order) { %>
+              <tr>
+                <!-- Order ID -->
+                <td>
+                  <span class="font-monospace small"><%= order.orderId %></span>
+                </td>
+
+                <!-- Company -->
+                <td>
+                  <strong><%= order.companyName %></strong>
+                  <br>
+                  <small class="text-muted"><%= order.email %></small>
+                </td>
+
+                <!-- Customer number -->
+                <td><code><%= order.customerNumber %></code></td>
+
+                <!-- Date -->
+                <td class="small">
+                  <%= new Date(order.createdAt).toLocaleDateString('sv-SE') %>
+                  <br>
+                  <span class="text-muted">
+                    <%= new Date(order.createdAt).toLocaleTimeString('sv-SE', { hour:'2-digit', minute:'2-digit' }) %>
+                  </span>
+                </td>
+
+                <!-- Items summary -->
+                <td>
+                  <% order.items.forEach(function(item) { %>
+                    <div class="small">
+                      <%= item.quantity %>× <%= item.name %>
+                      <% if (item.size) { %><span class="text-muted">(<%= item.size %>)</span><% } %>
+                    </div>
+                  <% }); %>
+                </td>
+
+                <!-- Total price -->
+                <td class="text-end fw-bold">
+                  <%= order.totalPrice.toLocaleString('sv-SE') %> kr
+                </td>
+
+                <!-- ============================================================
+                     STATUS DROPDOWN
+                     This is the core admin feature: updating order status.
+                     Each dropdown is its own mini-form that auto-submits when
+                     the value changes (onchange="this.form.submit()").
+                     
+                     The status is immediately saved to orders.json and reflected
+                     on the customer's /orders page — no phone call needed.
+                     ============================================================ -->
+                <td>
+                  <form action="/admin/update-status" method="POST">
+                    <input type="hidden" name="orderId" value="<%= order.orderId %>">
+                    <select name="status" class="form-select form-select-sm status-select"
+                            onchange="this.form.submit()"
+                            style="min-width:130px">
+                      <% statusOptions.forEach(function(s) { %>
+                        <option value="<%= s %>" <%= order.status === s ? 'selected' : '' %>>
+                          <%= s %>
+                        </option>
+                      <% }); %>
+                    </select>
+                  </form>
+                </td>
+
+                <!-- Estimated delivery -->
+                <td class="small text-success">
+                  <i class="bi bi-truck me-1"></i><%= order.estimatedDelivery %>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delivery address overview (useful for staff planning routes) -->
+  <% if (orders.length > 0) { %>
+    <div class="mt-4 p-3 bg-light rounded-3 small text-muted">
+      <i class="bi bi-info-circle me-1"></i>
+      Tips: Kunder ser sin orderstatus live via <strong>/orders?customer=KUNDNUMMER</strong>.
+      Uppdatera status direkt när ordern hanteras för att minimera kundsamtal.
+    </div>
+  <% } %>
+
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,118 @@
+<%- include('partials/header') %>
+
+<div class="container" style="max-width:700px">
+
+  <!-- Success banner -->
+  <div class="text-center mb-5">
+    <div style="font-size:4rem" class="mb-3">✅</div>
+    <h1 class="fw-bold" style="font-family:'Fraunces',serif">Tack för din beställning!</h1>
+    <p class="lead text-muted">
+      Din order har mottagits och bekräftelse skickas till <strong><%= order.email %></strong>.
+    </p>
+  </div>
+
+  <!-- Order details card -->
+  <div class="card border-0 shadow mb-4">
+    <div class="card-header bg-warning bg-opacity-25 border-0 p-4">
+      <div class="row g-3">
+        <div class="col-6 col-md-3 text-center">
+          <div class="text-muted small">Ordernummer</div>
+          <div class="fw-bold"><%= order.orderId %></div>
+        </div>
+        <div class="col-6 col-md-3 text-center">
+          <div class="text-muted small">Status</div>
+          <span class="badge bg-secondary"><%= order.status %></span>
+        </div>
+        <div class="col-6 col-md-3 text-center">
+          <div class="text-muted small">Beställt</div>
+          <div class="fw-bold"><%= new Date(order.createdAt).toLocaleDateString('sv-SE') %></div>
+        </div>
+        <div class="col-6 col-md-3 text-center">
+          <div class="text-muted small">Beräknad leverans</div>
+          <div class="fw-bold text-success">
+            <i class="bi bi-truck me-1"></i><%= order.estimatedDelivery %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body p-4">
+      <h5 class="fw-bold mb-3">Beställda produkter</h5>
+      
+      <div class="table-responsive">
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>Produkt</th>
+              <th class="text-center">Antal</th>
+              <th class="text-end">Summa</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% order.items.forEach(function(item) { %>
+              <tr>
+                <td>
+                  <%= item.name %>
+                  <% if (item.size) { %><br><small class="text-muted">Storlek: <%= item.size %></small><% } %>
+                  <% if (item.angle) { %><br><small class="text-muted">Vinkel: <%= item.angle %></small><% } %>
+                </td>
+                <td class="text-center"><%= item.quantity %></td>
+                <td class="text-end"><%= item.subtotal.toLocaleString('sv-SE') %> kr</td>
+              </tr>
+            <% }); %>
+          </tbody>
+          <tfoot class="table-light">
+            <tr>
+              <td colspan="2" class="fw-bold text-end">Totalt exkl. moms</td>
+              <td class="fw-bold text-end"><%= order.totalPrice.toLocaleString('sv-SE') %> kr</td>
+            </tr>
+            <tr>
+              <td colspan="2" class="text-muted text-end small">Moms (25%)</td>
+              <td class="text-muted text-end small">
+                <%= Math.round(order.totalPrice * 0.25).toLocaleString('sv-SE') %> kr
+              </td>
+            </tr>
+            <tr class="table-warning">
+              <td colspan="2" class="fw-bold text-end">Totalt inkl. moms</td>
+              <td class="fw-bold text-end">
+                <%= Math.round(order.totalPrice * 1.25).toLocaleString('sv-SE') %> kr
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <hr>
+      
+      <div class="row g-3 mt-1">
+        <div class="col-12 col-md-6">
+          <div class="text-muted small mb-1">Leveransadress</div>
+          <div><%= order.deliveryAddress %></div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="text-muted small mb-1">Fakturaadress</div>
+          <div><%= order.invoiceAddress %></div>
+        </div>
+        <% if (order.message) { %>
+          <div class="col-12">
+            <div class="text-muted small mb-1">Ditt meddelande</div>
+            <div><%= order.message %></div>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="d-flex flex-wrap gap-3 justify-content-center mb-5">
+    <a href="/orders?customer=<%= order.customerNumber %>" class="btn btn-dark btn-lg">
+      <i class="bi bi-clock-history me-2"></i>Se alla mina ordrar
+    </a>
+    <a href="/products" class="btn btn-outline-secondary btn-lg">
+      <i class="bi bi-grid me-2"></i>Fortsätt handla
+    </a>
+  </div>
+
+</div>
+
+<%- include('partials/footer') %>

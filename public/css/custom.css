@@ -1,0 +1,221 @@
+/* =============================================================================
+   custom.css — AB Strut & Rån
+   =============================
+   This file contains design tokens and responsive overrides that go beyond
+   Bootstrap's defaults. Bootstrap gives us a solid foundation; this file
+   adds the brand personality and small UX improvements.
+   
+   STRUCTURE:
+   1. CSS Variables (design tokens)
+   2. Typography
+   3. Hero section
+   4. Product cards
+   5. Tap target sizes (mobile UX)
+   6. Responsive overrides
+   7. Admin panel
+   ============================================================================= */
+
+/* =============================================================================
+   1. CSS VARIABLES (Design Tokens)
+   Custom properties let us change colours in one place — it cascades everywhere.
+   ============================================================================= */
+:root {
+  --brand-yellow:   #f5c542;
+  --brand-dark:     #1a1a1a;
+  --brand-cream:    #fdf8f0;
+  --brand-green:    #2d7a4f;
+  --radius-card:    12px;
+  --shadow-card:    0 2px 16px rgba(0,0,0,0.08);
+  --font-display:   'Fraunces', Georgia, serif;
+  --font-body:      'DM Sans', system-ui, sans-serif;
+  --transition-fast: 0.18s ease;
+}
+
+/* =============================================================================
+   2. GLOBAL TYPOGRAPHY
+   ============================================================================= */
+body {
+  font-family: var(--font-body);
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+}
+
+/* =============================================================================
+   3. HERO SECTION
+   Full-width diagonal-gradient banner on the home page.
+   ============================================================================= */
+.hero-banner {
+  position: relative;
+  min-height: 520px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d3748 50%, #1a365d 100%);
+  overflow: hidden;
+}
+
+/* Subtle dot-grid texture overlay for depth */
+.hero-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(245,197,66,0.12) 0%, transparent 60%);
+}
+
+/* =============================================================================
+   4. PRODUCT CARDS
+   Hover lift effect for product cards.
+   ============================================================================= */
+.product-card {
+  border-radius: var(--radius-card);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
+}
+
+/* Product image placeholder area */
+.product-img-placeholder {
+  height: 200px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+}
+
+/* Larger image area on the detail page */
+.product-detail-img {
+  height: 380px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+/* Category link cards on home page */
+.cat-card {
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  border-radius: var(--radius-card) !important;
+}
+
+.cat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1) !important;
+  color: #1a1a1a !important;
+}
+
+/* =============================================================================
+   5. LARGER TAP TARGETS FOR MOBILE
+   /* Larger tap targets for kiosk workers using phones/tablets */
+   Kiosk workers often wear gloves or have wet/cold hands.
+   Apple and Google guidelines recommend minimum 44×44px tap targets.
+   btn-lg in Bootstrap gives ~48px height — good for fingers.
+   We add some extra padding to filter buttons too.
+   ============================================================================= */
+.filter-btn {
+  padding: 0.5rem 1.1rem;
+  font-size: 0.95rem;
+  border-radius: 8px;
+}
+
+/* Make form controls comfortably tall on mobile */
+@media (max-width: 767px) {
+  .form-control,
+  .form-select {
+    min-height: 48px; /* 48px = comfortable tap target */
+    font-size: 1rem;  /* Prevents iOS auto-zoom on focus (must be ≥ 16px) */
+  }
+
+  /* Stack navbar items with more padding on mobile for easier tapping */
+  .navbar .nav-link {
+    padding: 0.75rem 1rem;
+    font-size: 1.05rem;
+  }
+}
+
+/* =============================================================================
+   6. RESPONSIVE OVERRIDES
+   ============================================================================= */
+
+/* Hero: smaller on mobile */
+@media (max-width: 575px) {
+  .hero-banner {
+    min-height: 420px;
+  }
+  .hero-banner h1 {
+    font-size: 2.2rem;
+  }
+}
+
+/* Accordion items */
+.accordion-item {
+  border-radius: var(--radius-card) !important;
+  overflow: hidden;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: #fff8e8;
+  color: #1a1a1a;
+  box-shadow: none;
+}
+
+.accordion-button:focus {
+  box-shadow: 0 0 0 3px rgba(245, 197, 66, 0.4);
+}
+
+/* =============================================================================
+   7. ADMIN PANEL
+   ============================================================================= */
+
+/* Status select — colour border based on selected value */
+.status-select {
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* =============================================================================
+   8. UTILITY CLASSES
+   ============================================================================= */
+
+/* Sticky navbar subtle shadow on scroll (JS not needed — CSS handles this via
+   Bootstrap's sticky-top which adds shadow on mount) */
+.sticky-top {
+  z-index: 1020;
+}
+
+/* Smooth page transitions */
+main {
+  animation: fadeInUp 0.25s ease both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Monospace font for order IDs */
+.font-monospace {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* =============================================================================
+   TEST BREAKPOINTS (for developers):
+   - 375px  phone (iPhone SE / budget Android)
+   - 768px  tablet (iPad portrait)
+   - 1280px desktop (laptop)
+   
+   Use Chrome DevTools (F12 → device toolbar) to test each breakpoint.
+   ============================================================================= */

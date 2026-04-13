@@ -1,0 +1,119 @@
+[
+  {
+    "id": 1,
+    "name": "Klassisk Strut – Standard",
+    "category": "Strutar",
+    "price": 59,
+    "stock": 240,
+    "description": "Vår mest sålda strut, perfekt för standardmjukglasstationer. Tillverkad av krispigt wafer-material med neutral smak som inte konkurrerar med glassen. Levereras i förpackningar om 100 st.",
+    "image": "/images/strut-standard.jpg",
+    "availableSizes": ["45mm","52mm","57mm","60mm","65mm","70mm","75mm","80mm","85mm","90mm","95mm","100mm","105mm","110mm","115mm","120mm"]
+  },
+  {
+    "id": 2,
+    "name": "Lyxstrut – Chokladkantad",
+    "category": "Strutar",
+    "price": 89,
+    "stock": 12,
+    "description": "Premiumstrut med chokladkantad topp. Ger ett exklusivt utseende och ett litet extra knaster. Populär på strandkiosker och sommarcaféer. Levereras i förpackningar om 50 st.",
+    "image": "/images/strut-choco.jpg",
+    "availableSizes": ["45mm","52mm","57mm","60mm","65mm","70mm","75mm","80mm","85mm","90mm","95mm","100mm","105mm","110mm","115mm","120mm"]
+  },
+  {
+    "id": 3,
+    "name": "Rånet – Klassisk",
+    "category": "Rån",
+    "price": 75,
+    "stock": 180,
+    "description": "Det klassiska rånet — frasigt, neutralt och professionellt. Passar perfekt till standardglasstationer. Levereras i förpackningar om 50 st.",
+    "image": "/images/ran-klassisk.jpg",
+    "sizes": ["Tvåkulors", "Trekulors", "Fyrkulors"],
+    "angles": ["Smal", "Medium", "Bred"]
+  },
+  {
+    "id": 4,
+    "name": "Karnevalsrånet",
+    "category": "Rån",
+    "price": 95,
+    "stock": 0,
+    "description": "Karnevalsrånet – special med plats för sylt och grädde. Det här rånet har en extra bred öppning och djupare ficka, perfekt för kiosker som serverar festliga kombinationer med hallonsylt och vispgrädde. Säsongsvara.",
+    "image": "/images/ran-karneval.jpg",
+    "sizes": ["Trekulors", "Fyrkulors"],
+    "angles": ["Bred"],
+    "note": "Karnevalsrånet – special med plats för sylt och grädde"
+  },
+  {
+    "id": 5,
+    "name": "Waferrulle – Enkel",
+    "category": "Rån",
+    "price": 65,
+    "stock": 320,
+    "description": "Enkel och elegant waferrulle, populär på strandkiosker som vill hålla det klassiskt. Neutral smak, perfekt krispighet. Levereras i förpackningar om 100 st.",
+    "image": "/images/ran-rulle.jpg",
+    "sizes": ["Tvåkulors", "Trekulors"],
+    "angles": ["Smal", "Medium"]
+  },
+  {
+    "id": 6,
+    "name": "Glassbägare 150ml",
+    "category": "Bägare",
+    "price": 35,
+    "stock": 500,
+    "description": "Liten pappbägare för barnportioner eller provsmakning. Belagd med mattsvart ytskikt och diskret AB Strut & Rån-logotyp. Levereras i förpackningar om 200 st.",
+    "image": "/images/bagare-liten.jpg"
+  },
+  {
+    "id": 7,
+    "name": "Glassbägare 250ml",
+    "category": "Bägare",
+    "price": 42,
+    "stock": 8,
+    "description": "Mellanstor bägare för standardportioner mjukglass. Stabil och tålig – håller formen även med toppings och sirap. Levereras i förpackningar om 200 st.",
+    "image": "/images/bagare-mellan.jpg"
+  },
+  {
+    "id": 8,
+    "name": "Glassbägare 400ml – XL Party",
+    "category": "Bägare",
+    "price": 55,
+    "stock": 150,
+    "description": "Stor festbägare för extra generösa portioner med utrymme för toppings, sprinkles och sirap. Perfekt för sommarfester och evenemang. Levereras i förpackningar om 100 st.",
+    "image": "/images/bagare-xl.jpg"
+  },
+  {
+    "id": 9,
+    "name": "Mjukglassmaskin Model X200",
+    "category": "Glassmaskiner",
+    "price": 28900,
+    "stock": 3,
+    "description": "Pålitlig och tystgående mjukglassmaskin lämplig för kiosker och sommarcaféer med medelstort flöde. Kyler snabbt, enkel att rengöra och underhålla. Kapacitet: ca 180 portioner/timme. Inkl. 2 år garanti och installation.",
+    "image": "/images/maskin-x200.jpg"
+  },
+  {
+    "id": 10,
+    "name": "Mjukglassmaskin Model X500 Pro",
+    "category": "Glassmaskiner",
+    "price": 47500,
+    "stock": 1,
+    "description": "Professionell maskin för platser med högt flöde — strandpromenader, nöjesparker, festivaler. Dubbel cylinder, självpastöriserande, pekskärm. Kapacitet: upp till 400 portioner/timme. Inkl. 3 år garanti, installation och utbildning.",
+    "image": "/images/maskin-x500.jpg"
+  },
+  {
+    "id": 11,
+    "name": "CleanPro Rengöringsmedel 5L",
+    "category": "Glassmaskiner",
+    "price": 349,
+    "stock": 45,
+    "description": "Professionellt rengöringsmedel speciellt formulerat för mjukglasskylare och rörledningar. Bryter ner mjölkrester och förhindrar bakterietillväxt. Godkänt för livsmedelskontakt. Räcker till ca 60 rengöringscykler.",
+    "image": "/images/rengoring.jpg"
+  },
+  {
+    "id": 12,
+    "name": "Reservdelar – O-ringskit Universal",
+    "category": "Glassmaskiner",
+    "price": 199,
+    "stock": 22,
+    "description": "Komplett O-ringssats som passar de flesta märken av mjukglasskylare. Innehåller 24 ringar i 6 vanliga storlekar. Byt dem regelbundet för att undvika läckage och säkerställa hygien.",
+    "image": "/images/oring-kit.jpg"
+  }
+]
