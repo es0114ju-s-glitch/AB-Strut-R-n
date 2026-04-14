@@ -50,5 +50,93 @@
     "status": "Mottagen",
     "createdAt": "2026-04-13T11:51:01.217Z",
     "estimatedDelivery": "2026-04-16"
+  },
+  {
+    "orderId": "ORD-1776173676426",
+    "companyName": "",
+    "customerNumber": "",
+    "items": [
+      {
+        "productId": 1,
+        "name": "Klassisk Strut – Standard",
+        "category": "Strutar",
+        "size": "85mm",
+        "angle": null,
+        "quantity": 1,
+        "unitPrice": 59,
+        "subtotal": 59
+      },
+      {
+        "productId": 10,
+        "name": "Mjukglassmaskin Model X500 Pro",
+        "category": "Glassmaskiner",
+        "size": null,
+        "angle": null,
+        "quantity": 1,
+        "unitPrice": 47500,
+        "subtotal": 47500
+      }
+    ],
+    "totalPrice": 47559,
+    "deliveryAddress": "",
+    "invoiceAddress": "",
+    "email": "",
+    "phone": "",
+    "message": "",
+    "status": "Mottagen",
+    "createdAt": "2026-04-14T13:34:36.426Z",
+    "estimatedDelivery": "2026-04-17"
+  },
+  {
+    "orderId": "ORD-1776173772991",
+    "companyName": "Thomas",
+    "customerNumber": "1234",
+    "items": [
+      {
+        "productId": 1,
+        "name": "Klassisk Strut – Standard",
+        "category": "Strutar",
+        "size": "80mm",
+        "angle": null,
+        "quantity": 1,
+        "unitPrice": 59,
+        "subtotal": 59
+      }
+    ],
+    "totalPrice": 59,
+    "deliveryAddress": "Exempelgatan 1, 111 11, Lund",
+    "invoiceAddress": "Exempelgatan 1, 111 11, Lund",
+    "email": "exempel@exempel.com",
+    "phone": "040123456",
+    "message": "",
+    "status": "Mottagen",
+    "createdAt": "2026-04-14T13:36:12.991Z",
+    "estimatedDelivery": "2026-04-17"
+  },
+  {
+    "orderId": "ORD-1776174019097",
+    "companyName": "",
+    "customerNumber": "",
+    "items": [
+      {
+        "productId": 1,
+        "name": "Klassisk Strut – Standard",
+        "category": "Strutar",
+        "size": "90mm",
+        "angle": null,
+        "quantity": 240,
+        "unitPrice": 59,
+        "subtotal": 14160
+      }
+    ],
+    "totalPrice": 14160,
+    "deliveryAddress": "",
+    "invoiceAddress": "",
+    "email": "",
+    "phone": "",
+    "message": "",
+    "status": "Mottagen",
+    "createdAt": "2026-04-14T13:40:19.097Z",
+    "estimatedDelivery": "2026-04-17"
   }
 ]
