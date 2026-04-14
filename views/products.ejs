@@ -46,7 +46,7 @@
       
       <!-- Each product card has data-category so JS can show/hide it -->
       <div class="col-12 col-md-6 col-lg-4 product-item" data-category="<%= product.category %>">
-        <div class="card h-100 border-0 shadow-sm product-card">
+        <div class="card h-100 border-0 shadow-sm product-card position-relative">
           
           <!-- Image placeholder -->
           <div class="card-img-top product-img-placeholder d-flex align-items-center justify-content-center">
@@ -103,7 +103,7 @@
 
             <!-- Spacer to push button to bottom of card -->
             <div class="mt-auto">
-              <a href="/products/<%= product.id %>" class="btn btn-dark w-100">
+              <a href="/products/<%= product.id %>" class="btn btn-dark w-100 stretched-link">
                 Visa produkt <i class="bi bi-arrow-right ms-1"></i>
               </a>
             </div>

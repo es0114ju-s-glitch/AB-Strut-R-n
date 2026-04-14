@@ -78,6 +78,7 @@ h1, h2, h3 {
 .product-card {
   border-radius: var(--radius-card);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  cursor: pointer;
 }
 
 .product-card:hover {
@@ -111,13 +112,13 @@ h1, h2, h3 {
 }
 
 /* =============================================================================
-   5. LARGER TAP TARGETS FOR MOBILE
-   /* Larger tap targets for kiosk workers using phones/tablets */
-   Kiosk workers often wear gloves or have wet/cold hands.
-   Apple and Google guidelines recommend minimum 44×44px tap targets.
-   btn-lg in Bootstrap gives ~48px height — good for fingers.
-   We add some extra padding to filter buttons too.
-   ============================================================================= */
+  5. LARGER TAP TARGETS FOR MOBILE
+  Larger tap targets for kiosk workers using phones/tablets.
+  Kiosk workers often wear gloves or have wet/cold hands.
+  Apple and Google guidelines recommend minimum 44×44px tap targets.
+  btn-lg in Bootstrap gives ~48px height — good for fingers.
+  We add some extra padding to filter buttons too.
+  ============================================================================= */
 .filter-btn {
   padding: 0.5rem 1.1rem;
   font-size: 0.95rem;
