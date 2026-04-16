@@ -3,21 +3,89 @@
     "id": 1,
     "name": "Klassisk Strut – Standard",
     "category": "Strutar",
-    "price": 59,
-    "stock": 240,
+    "price": 69,
+    "stockPerSize": {
+      "45mm": 200,
+      "52mm": 150,
+      "57mm": 160,
+      "60mm": 180,
+      "65mm": 170,
+      "70mm": 180,
+      "75mm": 300,
+      "80mm": 220,
+      "85mm": 210,
+      "90mm": 180,
+      "95mm": 170,
+      "100mm": 160,
+      "105mm": 120,
+      "110mm": 100,
+      "115mm": 90,
+      "120mm": 80
+    },
     "description": "Vår mest sålda strut, perfekt för standardmjukglasstationer. Tillverkad av krispigt wafer-material med neutral smak som inte konkurrerar med glassen. Levereras i förpackningar om 100 st.",
     "image": "/images/strut-standard.jpg",
-    "availableSizes": ["45mm","52mm","57mm","60mm","65mm","70mm","75mm","80mm","85mm","90mm","95mm","100mm","105mm","110mm","115mm","120mm"]
+    "availableSizes": [
+      "45mm",
+      "52mm",
+      "57mm",
+      "60mm",
+      "65mm",
+      "70mm",
+      "75mm",
+      "80mm",
+      "85mm",
+      "90mm",
+      "95mm",
+      "100mm",
+      "105mm",
+      "110mm",
+      "115mm",
+      "120mm"
+    ]
   },
   {
     "id": 2,
     "name": "Lyxstrut – Chokladkantad",
     "category": "Strutar",
     "price": 89,
-    "stock": 12,
+    "stockPerSize": {
+      "45mm": 2,
+      "52mm": 2,
+      "57mm": 1,
+      "60mm": 1,
+      "65mm": 1,
+      "70mm": 1,
+      "75mm": 1,
+      "80mm": 1,
+      "85mm": 1,
+      "90mm": 1,
+      "95mm": 0,
+      "100mm": 0,
+      "105mm": 0,
+      "110mm": 0,
+      "115mm": 0,
+      "120mm": 0
+    },
     "description": "Premiumstrut med chokladkantad topp. Ger ett exklusivt utseende och ett litet extra knaster. Populär på strandkiosker och sommarcaféer. Levereras i förpackningar om 50 st.",
     "image": "/images/strut-choco.jpg",
-    "availableSizes": ["45mm","52mm","57mm","60mm","65mm","70mm","75mm","80mm","85mm","90mm","95mm","100mm","105mm","110mm","115mm","120mm"]
+    "availableSizes": [
+      "45mm",
+      "52mm",
+      "57mm",
+      "60mm",
+      "65mm",
+      "70mm",
+      "75mm",
+      "80mm",
+      "85mm",
+      "90mm",
+      "95mm",
+      "100mm",
+      "105mm",
+      "110mm",
+      "115mm",
+      "120mm"
+    ]
   },
   {
     "id": 3,
@@ -27,8 +95,16 @@
     "stock": 180,
     "description": "Det klassiska rånet — frasigt, neutralt och professionellt. Passar perfekt till standardglasstationer. Levereras i förpackningar om 50 st.",
     "image": "/images/ran-klassisk.jpg",
-    "sizes": ["Tvåkulors", "Trekulors", "Fyrkulors"],
-    "angles": ["Smal", "Medium", "Bred"]
+    "sizes": [
+      "Tvåkulors",
+      "Trekulors",
+      "Fyrkulors"
+    ],
+    "angles": [
+      "Smal",
+      "Medium",
+      "Bred"
+    ]
   },
   {
     "id": 4,
@@ -38,8 +114,13 @@
     "stock": 0,
     "description": "Karnevalsrånet – special med plats för sylt och grädde. Det här rånet har en extra bred öppning och djupare ficka, perfekt för kiosker som serverar festliga kombinationer med hallonsylt och vispgrädde. Säsongsvara.",
     "image": "/images/ran-karneval.jpg",
-    "sizes": ["Trekulors", "Fyrkulors"],
-    "angles": ["Bred"],
+    "sizes": [
+      "Trekulors",
+      "Fyrkulors"
+    ],
+    "angles": [
+      "Bred"
+    ],
     "note": "Karnevalsrånet – special med plats för sylt och grädde"
   },
   {
@@ -50,8 +131,14 @@
     "stock": 320,
     "description": "Enkel och elegant waferrulle, populär på strandkiosker som vill hålla det klassiskt. Neutral smak, perfekt krispighet. Levereras i förpackningar om 100 st.",
     "image": "/images/ran-rulle.jpg",
-    "sizes": ["Tvåkulors", "Trekulors"],
-    "angles": ["Smal", "Medium"]
+    "sizes": [
+      "Tvåkulors",
+      "Trekulors"
+    ],
+    "angles": [
+      "Smal",
+      "Medium"
+    ]
   },
   {
     "id": 6,

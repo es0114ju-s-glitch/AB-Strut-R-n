@@ -138,5 +138,39 @@
     "status": "Mottagen",
     "createdAt": "2026-04-14T13:40:19.097Z",
     "estimatedDelivery": "2026-04-17"
+  },
+  {
+    "orderId": "ORD-1776340589962",
+    "companyName": "Lomma Beach Kiosk",
+    "customerNumber": "100",
+    "items": [
+      {
+        "productId": 1,
+        "name": "Klassisk Strut – Standard",
+        "category": "Strutar",
+        "size": "70mm",
+        "angle": null,
+        "quantity": 10,
+        "unitPrice": 59,
+        "subtotal": 590
+      }
+    ],
+    "totalPrice": 590,
+    "deliveryAddress": {
+      "street": "Seglaregatan 6",
+      "zip": "23431",
+      "city": "Lomma"
+    },
+    "invoiceAddress": {
+      "street": "Seglaregatan 6",
+      "zip": "23431",
+      "city": "Lomma"
+    },
+    "email": "lomma@glasskiosk.se",
+    "phone": "040-123456",
+    "message": "",
+    "status": "Mottagen",
+    "createdAt": "2026-04-16T11:56:29.962Z",
+    "estimatedDelivery": "2026-04-19"
   }
 ]

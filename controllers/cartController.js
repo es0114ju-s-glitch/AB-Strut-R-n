@@ -55,6 +55,10 @@ function addToCart(req, res) {
     return res.redirect('/products');
   }
 
+  if (product.category === 'Glassmaskiner') {
+    return res.redirect('/offert?productId=' + product.id);
+  }
+
   const qty = parseInt(quantity) || 1;
   const unitPrice = product.price;
   const subtotal = unitPrice * qty;
@@ -88,7 +92,8 @@ function addToCart(req, res) {
     req.session.cart.push(cartItem);
   }
 
-  res.redirect('/cart');
+  // Better UX: user can continue browsing instead of being forced to the cart every time
+  res.redirect('/products/' + product.id + '?added=1');
 }
 
 // -----------------------------------------------------------------------------
@@ -124,6 +129,21 @@ function showCheckout(req, res) {
     title: 'Kassa – AB Strut & Rån',
     cart: cart,
     total: total,
+    errorMessage: null,
+    formData: {
+      companyName: '',
+      customerNumber: req.session.customerNumber || '',
+      email: '',
+      phone: '',
+      message: '',
+      deliveryStreet: '',
+      deliveryZip: '',
+      deliveryCity: '',
+      invoiceStreet: '',
+      invoiceZip: '',
+      invoiceCity: '',
+      sameAddress: true
+    },
     cartCount: cart.length
   });
 }
@@ -150,13 +170,67 @@ async function processCheckout(req, res) {
   const {
     companyName,
     customerNumber,
-    deliveryAddress,
-    invoiceAddress,
+    deliveryStreet,
+    deliveryZip,
+    deliveryCity,
+    invoiceStreet,
+    invoiceZip,
+    invoiceCity,
     sameAddress,  // checkbox: "Samma som leveransadress"
     email,
     phone,
     message
   } = req.body;
+
+  const normalizedData = {
+    companyName: (companyName || '').trim(),
+    customerNumber: (customerNumber || '').trim(),
+    email: (email || '').trim(),
+    phone: (phone || '').trim(),
+    message: (message || '').trim(),
+    deliveryStreet: (deliveryStreet || '').trim(),
+    deliveryZip: (deliveryZip || '').trim(),
+    deliveryCity: (deliveryCity || '').trim(),
+    invoiceStreet: (invoiceStreet || '').trim(),
+    invoiceZip: (invoiceZip || '').trim(),
+    invoiceCity: (invoiceCity || '').trim(),
+    sameAddress: sameAddress === 'yes'
+  };
+
+  // Required fields prevent incomplete orders that staff would otherwise have to follow up by phone
+  const missingBaseField =
+    normalizedData.companyName === '' ||
+    normalizedData.customerNumber === '' ||
+    normalizedData.email === '' ||
+    normalizedData.phone === '' ||
+    normalizedData.deliveryStreet === '' ||
+    normalizedData.deliveryZip === '' ||
+    normalizedData.deliveryCity === '';
+
+  const missingInvoiceField =
+    !normalizedData.sameAddress && (
+      normalizedData.invoiceStreet === '' ||
+      normalizedData.invoiceZip === '' ||
+      normalizedData.invoiceCity === ''
+    );
+
+  const invalidDeliveryZip = !/^\d{5}$/.test(normalizedData.deliveryZip);
+  const invalidInvoiceZip =
+    !normalizedData.sameAddress && !/^\d{5}$/.test(normalizedData.invoiceZip);
+
+  if (missingBaseField || missingInvoiceField || invalidDeliveryZip || invalidInvoiceZip) {
+    const total = cart.reduce((sum, item) => sum + item.subtotal, 0);
+    return res.status(400).render('checkout', {
+      title: 'Kassa – AB Strut & Rån',
+      cart: cart,
+      total: total,
+      errorMessage: 'Alla obligatoriska fält måste fyllas i innan beställningen kan skickas.',
+      formData: normalizedData,
+      cartCount: cart.length
+    });
+  }
+
+  req.session.customerNumber = normalizedData.customerNumber;
 
   const total = cart.reduce((sum, item) => sum + item.subtotal, 0);
 
@@ -173,16 +247,30 @@ async function processCheckout(req, res) {
   // Build the order object that will be saved to orders.json
   const order = {
     orderId: orderId,
-    companyName: companyName,
-    customerNumber: customerNumber,
+    companyName: normalizedData.companyName,
+    customerNumber: normalizedData.customerNumber,
     items: cart,
     totalPrice: total,
-    deliveryAddress: deliveryAddress,
-    // If checkbox was ticked, invoiceAddress = deliveryAddress
-    invoiceAddress: sameAddress ? deliveryAddress : invoiceAddress,
-    email: email,
-    phone: phone,
-    message: message || '',
+    // Separate fields ensure consistent address data — important for the delivery department
+    deliveryAddress: {
+      street: normalizedData.deliveryStreet,
+      zip: normalizedData.deliveryZip,
+      city: normalizedData.deliveryCity
+    },
+    invoiceAddress: normalizedData.sameAddress
+      ? {
+          street: normalizedData.deliveryStreet,
+          zip: normalizedData.deliveryZip,
+          city: normalizedData.deliveryCity
+        }
+      : {
+          street: normalizedData.invoiceStreet,
+          zip: normalizedData.invoiceZip,
+          city: normalizedData.invoiceCity
+        },
+    email: normalizedData.email,
+    phone: normalizedData.phone,
+    message: normalizedData.message,
     status: 'Mottagen',
     createdAt: now.toISOString(),
     estimatedDelivery: estimatedDelivery
@@ -190,6 +278,9 @@ async function processCheckout(req, res) {
 
   // Save to orders.json via the model
   orderModel.saveOrder(order);
+
+  // Stock is updated immediately on order — solves the case problem where stock levels were never up to date
+  productModel.reduceStockForOrderItems(cart);
 
   // Clear the cart after successful order
   req.session.cart = [];

@@ -8,6 +8,7 @@
 // =============================================================================
 
 const orderModel = require('../models/orderModel');
+const productModel = require('../models/productModel');
 
 // -----------------------------------------------------------------------------
 // showOrders(req, res)
@@ -17,19 +18,21 @@ const orderModel = require('../models/orderModel');
 // req.query.customer reads that value.
 // -----------------------------------------------------------------------------
 function showOrders(req, res) {
-  const customerNumber = req.query.customer || '';
+  const queryCustomer = (req.query.customer || '').trim();
+  const customerNumber = queryCustomer || (req.session.customerNumber || '');
   let orders = [];
 
   // Only look up orders if a customer number was actually provided
-  if (customerNumber.trim() !== '') {
-    orders = orderModel.getOrdersByCustomer(customerNumber.trim());
+  if (customerNumber !== '') {
+    orders = orderModel.getOrdersByCustomer(customerNumber);
   }
 
   res.render('orders', {
     title: 'Mina ordrar – AB Strut & Rån',
     orders: orders,
     customerNumber: customerNumber,
-    searched: customerNumber.trim() !== '', // Did the user submit the form?
+    searched: customerNumber !== '',
+    fromSession: queryCustomer === '' && customerNumber !== '',
     cartCount: req.session.cart ? req.session.cart.length : 0
   });
 }
@@ -53,11 +56,13 @@ function showAdmin(req, res) {
 
   // Status options for the dropdown — maps to badge colours in the views
   const statusOptions = ['Mottagen', 'Behandlas', 'Skickad', 'Levererad'];
+  const allProducts = productModel.getAllProducts();
 
   res.render('admin', {
     title: 'Admin – AB Strut & Rån',
     orders: allOrders,
     statusOptions: statusOptions,
+    products: allProducts,
     cartCount: 0 // Admin page doesn't need cart count
   });
 }
@@ -83,4 +88,17 @@ function updateStatus(req, res) {
   res.redirect('/admin');
 }
 
-module.exports = { showOrders, showAdmin, updateStatus };
+function updatePrice(req, res) {
+  const { productId, price } = req.body;
+  const parsedPrice = Number(price);
+
+  if (!Number.isFinite(parsedPrice) || parsedPrice < 0) {
+    return res.redirect('/admin');
+  }
+
+  // Solves the case problem: prices on the old site were never updated, forcing staff to call customers to correct them
+  productModel.updateProductPrice(productId, parsedPrice);
+  res.redirect('/admin');
+}
+
+module.exports = { showOrders, showAdmin, updateStatus, updatePrice };

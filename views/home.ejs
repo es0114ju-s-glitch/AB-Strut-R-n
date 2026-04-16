@@ -65,7 +65,9 @@
   <section class="mb-5">
     <div class="d-flex align-items-center mb-4">
       <div class="me-3">
-        <span class="badge bg-warning text-dark fs-6 px-3 py-2">🌟 Veckans erbjudanden</span>
+        <span class="badge bg-accent-yellow text-dark fs-6 px-3 py-2">
+          <i class="bi bi-stars me-1"></i>Veckans erbjudanden
+        </span>
       </div>
       <hr class="flex-grow-1">
     </div>
@@ -74,7 +76,8 @@
       <!-- Loop over each featured product -->
       <% featured.forEach(function(product) { %>
         <div class="col-12 col-sm-6 col-lg-3">
-          <div class="card h-100 shadow-sm border-0 product-card position-relative">
+          <a href="/products/<%= product.id %>" class="text-decoration-none text-reset d-block h-100">
+          <div class="card h-100 shadow-sm border-0 product-card">
             
             <!-- Product image placeholder (real images would go in /public/images) -->
             <div class="card-img-top product-img-placeholder d-flex align-items-center justify-content-center">
@@ -96,10 +99,11 @@
               <p class="text-muted small flex-grow-1"><%= product.description.substring(0, 80) %>…</p>
               <div class="d-flex align-items-center justify-content-between mt-3">
                 <span class="fw-bold fs-5 text-dark"><%= product.price.toLocaleString('sv-SE') %> kr</span>
-                <a href="/products/<%= product.id %>" class="btn btn-sm btn-dark stretched-link">Visa</a>
+                <span class="small fw-semibold text-uppercase" style="letter-spacing:0.04em">Visa <i class="bi bi-arrow-right ms-1"></i></span>
               </div>
             </div>
           </div>
+          </a>
         </div>
       <% }); %>
     </div>
@@ -135,7 +139,7 @@
 
   <!-- B2B info strip -->
   <div class="alert alert-dark border-0 d-flex align-items-center gap-3 mb-5">
-    <i class="bi bi-info-circle-fill fs-4 text-warning"></i>
+    <i class="bi bi-info-circle-fill fs-4 text-info-dark"></i>
     <div>
       <strong>Endast för B2B-kunder.</strong> Alla priser är exkl. moms. Har du frågor? Ring <strong>040-12 34 56</strong> eller beställ direkt online.
     </div>

@@ -1,0 +1,60 @@
+<%- include('partials/header') %>
+
+<div class="container" style="max-width:760px">
+  <h1 class="fw-bold mb-2" style="font-family:'Fraunces',serif">Begär offert</h1>
+  <p class="text-muted mb-4">Fyll i formuläret så kontaktar vi dig med en anpassad offert.</p>
+
+  <% if (successMessage) { %>
+    <div class="alert alert-success"><%= successMessage %></div>
+  <% } %>
+  <% if (errorMessage) { %>
+    <div class="alert alert-danger"><%= errorMessage %></div>
+  <% } %>
+
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+      <% if (product) { %>
+        <div class="mb-3">
+          <span class="badge bg-light text-dark border">Produkt</span>
+          <div class="fw-semibold mt-2"><%= product.name %></div>
+          <div class="text-muted small">Kategori: <%= product.category %></div>
+        </div>
+      <% } %>
+
+      <form action="/offert" method="POST" class="row g-3">
+        <input type="hidden" name="productId" value="<%= formData.productId %>">
+
+        <div class="col-12 col-md-6">
+          <label for="name" class="form-label fw-semibold">Namn</label>
+          <input type="text" id="name" name="name" class="form-control" value="<%= formData.name %>" required>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <label for="company" class="form-label fw-semibold">Företag</label>
+          <input type="text" id="company" name="company" class="form-control" value="<%= formData.company %>" required>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <label for="email" class="form-label fw-semibold">E-post</label>
+          <input type="email" id="email" name="email" class="form-control" value="<%= formData.email %>" required>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <label for="phone" class="form-label fw-semibold">Telefon</label>
+          <input type="tel" id="phone" name="phone" class="form-control" value="<%= formData.phone %>" required>
+        </div>
+
+        <div class="col-12">
+          <label for="message" class="form-label fw-semibold">Meddelande</label>
+          <textarea id="message" name="message" class="form-control" rows="5" required><%= formData.message %></textarea>
+        </div>
+
+        <div class="col-12">
+          <button type="submit" class="btn btn-dark btn-lg">Skicka offertförfrågan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

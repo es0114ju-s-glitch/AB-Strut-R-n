@@ -4,6 +4,12 @@
   <h1 class="fw-bold mb-2" style="font-family:'Fraunces',serif">Kassa</h1>
   <p class="text-muted mb-4"><%= cart.length %> produkt(er) · Total: <%= total.toLocaleString('sv-SE') %> kr exkl. moms</p>
 
+  <% if (errorMessage) { %>
+    <div class="alert alert-danger" role="alert">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i><%= errorMessage %>
+    </div>
+  <% } %>
+
   <!--
     action="/checkout" method="POST" sends the form data to cartController.processCheckout()
     All form fields' name="" attributes become keys in req.body on the server.
@@ -16,7 +22,7 @@
     <div class="card border-0 shadow-sm mb-4">
       <div class="card-body p-4">
         <h5 class="fw-bold mb-4">
-          <i class="bi bi-building me-2 text-warning"></i>Företagsinformation
+          <i class="bi bi-building me-2 text-info-dark"></i>Företagsinformation
         </h5>
         
         <div class="row g-3">
@@ -24,13 +30,13 @@
             <label for="companyName" class="form-label fw-semibold">Företagsnamn *</label>
             <input type="text" class="form-control form-control-lg" 
                    id="companyName" name="companyName" 
-                   placeholder="T.ex. Lomma Beach Kiosk AB" required>
+                   placeholder="T.ex. Lomma Beach Kiosk AB" value="<%= formData.companyName %>" required>
           </div>
           <div class="col-12 col-md-6">
             <label for="customerNumber" class="form-label fw-semibold">Kundnummer *</label>
             <input type="text" class="form-control form-control-lg" 
                    id="customerNumber" name="customerNumber"
-                   placeholder="T.ex. K1042" required>
+                   placeholder="T.ex. K1042" value="<%= formData.customerNumber %>" required>
             <div class="form-text">Hittar du ditt kundnummer på din senaste faktura.</div>
           </div>
         </div>
@@ -43,32 +49,64 @@
     <div class="card border-0 shadow-sm mb-4">
       <div class="card-body p-4">
         <h5 class="fw-bold mb-4">
-          <i class="bi bi-geo-alt me-2 text-warning"></i>Adresser
+          <i class="bi bi-geo-alt me-2 text-info-dark"></i>Adresser
         </h5>
-        
-        <div class="mb-3">
-          <label for="deliveryAddress" class="form-label fw-semibold">Leveransadress *</label>
-          <input type="text" class="form-control form-control-lg" 
-                 id="deliveryAddress" name="deliveryAddress"
-                 placeholder="Gatuadress, postnummer, stad" required>
+
+        <h6 class="fw-semibold mb-3">Leveransadress *</h6>
+        <div class="row g-3 mb-3">
+          <div class="col-12">
+            <label for="deliveryStreet" class="form-label">Gatuadress</label>
+            <input type="text" class="form-control form-control-lg"
+                   id="deliveryStreet" name="deliveryStreet"
+                   value="<%= formData.deliveryStreet %>" required>
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="deliveryZip" class="form-label">Postnummer</label>
+            <input type="text" class="form-control form-control-lg"
+                   id="deliveryZip" name="deliveryZip"
+                   value="<%= formData.deliveryZip %>" maxlength="5" pattern="[0-9]{5}" required>
+          </div>
+          <div class="col-12 col-md-8">
+            <label for="deliveryCity" class="form-label">Ort</label>
+            <input type="text" class="form-control form-control-lg"
+                   id="deliveryCity" name="deliveryCity"
+                   value="<%= formData.deliveryCity %>" required>
+          </div>
         </div>
 
         <!-- Checkbox to copy delivery address to invoice address -->
         <div class="form-check mb-3">
           <input type="checkbox" class="form-check-input" 
                  id="sameAddress" name="sameAddress" value="yes"
-                 checked onchange="toggleInvoiceAddress(this)">
+                 <%= formData.sameAddress ? 'checked' : '' %> onchange="toggleInvoiceAddress(this)">
           <label class="form-check-label" for="sameAddress">
             Fakturaadress samma som leveransadress
           </label>
         </div>
 
         <!-- Invoice address field — hidden by default (same as delivery) -->
-        <div id="invoiceAddressDiv" class="d-none">
-          <label for="invoiceAddress" class="form-label fw-semibold">Fakturaadress</label>
-          <input type="text" class="form-control form-control-lg" 
-                 id="invoiceAddress" name="invoiceAddress"
-                 placeholder="Fakturaadress om annan än leveransadress">
+        <div id="invoiceAddressDiv" class="<%= formData.sameAddress ? 'd-none' : '' %>">
+          <h6 class="fw-semibold mb-3">Fakturaadress *</h6>
+          <div class="row g-3">
+            <div class="col-12">
+              <label for="invoiceStreet" class="form-label">Gatuadress</label>
+              <input type="text" class="form-control form-control-lg"
+                     id="invoiceStreet" name="invoiceStreet"
+                     value="<%= formData.invoiceStreet %>" <%= formData.sameAddress ? '' : 'required' %>>
+            </div>
+            <div class="col-12 col-md-4">
+              <label for="invoiceZip" class="form-label">Postnummer</label>
+              <input type="text" class="form-control form-control-lg"
+                     id="invoiceZip" name="invoiceZip"
+                     value="<%= formData.invoiceZip %>" maxlength="5" pattern="[0-9]{5}" <%= formData.sameAddress ? '' : 'required' %>>
+            </div>
+            <div class="col-12 col-md-8">
+              <label for="invoiceCity" class="form-label">Ort</label>
+              <input type="text" class="form-control form-control-lg"
+                     id="invoiceCity" name="invoiceCity"
+                     value="<%= formData.invoiceCity %>" <%= formData.sameAddress ? '' : 'required' %>>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -79,7 +117,7 @@
     <div class="card border-0 shadow-sm mb-4">
       <div class="card-body p-4">
         <h5 class="fw-bold mb-4">
-          <i class="bi bi-person me-2 text-warning"></i>Kontaktuppgifter
+          <i class="bi bi-person me-2 text-info-dark"></i>Kontaktuppgifter
         </h5>
         
         <div class="row g-3">
@@ -87,18 +125,18 @@
             <label for="email" class="form-label fw-semibold">E-post *</label>
             <input type="email" class="form-control form-control-lg" 
                    id="email" name="email"
-                   placeholder="info@dinverksamhet.se" required>
+                   placeholder="info@dinverksamhet.se" value="<%= formData.email %>" required>
           </div>
           <div class="col-12 col-md-6">
             <label for="phone" class="form-label fw-semibold">Telefon *</label>
             <input type="tel" class="form-control form-control-lg" 
                    id="phone" name="phone"
-                   placeholder="040-123456" required>
+                   placeholder="040-123456" value="<%= formData.phone %>" required>
           </div>
           <div class="col-12">
             <label for="message" class="form-label fw-semibold">Meddelande (valfritt)</label>
             <textarea class="form-control" id="message" name="message" rows="3"
-                      placeholder="T.ex. leveransinstruktioner, önskad leveranstid..."></textarea>
+                      placeholder="T.ex. leveransinstruktioner, önskad leveranstid..."><%= formData.message %></textarea>
           </div>
         </div>
       </div>
@@ -149,16 +187,22 @@
 <script>
   function toggleInvoiceAddress(checkbox) {
     const div = document.getElementById('invoiceAddressDiv');
-    const input = document.getElementById('invoiceAddress');
+    const invoiceStreet = document.getElementById('invoiceStreet');
+    const invoiceZip = document.getElementById('invoiceZip');
+    const invoiceCity = document.getElementById('invoiceCity');
     
     if (checkbox.checked) {
       // Same address — hide the invoice field (not needed)
       div.classList.add('d-none');
-      input.removeAttribute('required');
+      invoiceStreet.removeAttribute('required');
+      invoiceZip.removeAttribute('required');
+      invoiceCity.removeAttribute('required');
     } else {
       // Different address — show and require the invoice field
       div.classList.remove('d-none');
-      input.setAttribute('required', 'required');
+      invoiceStreet.setAttribute('required', 'required');
+      invoiceZip.setAttribute('required', 'required');
+      invoiceCity.setAttribute('required', 'required');
     }
   }
 </script>

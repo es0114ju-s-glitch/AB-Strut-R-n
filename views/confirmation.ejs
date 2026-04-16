@@ -87,11 +87,23 @@
       <div class="row g-3 mt-1">
         <div class="col-12 col-md-6">
           <div class="text-muted small mb-1">Leveransadress</div>
-          <div><%= order.deliveryAddress %></div>
+          <div>
+            <% if (typeof order.deliveryAddress === 'string') { %>
+              <%= order.deliveryAddress %>
+            <% } else { %>
+              <%= order.deliveryAddress.street %>, <%= order.deliveryAddress.zip %> <%= order.deliveryAddress.city %>
+            <% } %>
+          </div>
         </div>
         <div class="col-12 col-md-6">
           <div class="text-muted small mb-1">Fakturaadress</div>
-          <div><%= order.invoiceAddress %></div>
+          <div>
+            <% if (typeof order.invoiceAddress === 'string') { %>
+              <%= order.invoiceAddress %>
+            <% } else { %>
+              <%= order.invoiceAddress.street %>, <%= order.invoiceAddress.zip %> <%= order.invoiceAddress.city %>
+            <% } %>
+          </div>
         </div>
         <% if (order.message) { %>
           <div class="col-12">

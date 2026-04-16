@@ -19,18 +19,38 @@ const path = require('path'); // Node.js built-in: handles file paths safely
 // We go up one level (..) then into /data/products.json
 const PRODUCTS_FILE = path.join(__dirname, '..', 'data', 'products.json');
 
+function readProductsRaw() {
+  const fileContents = fs.readFileSync(PRODUCTS_FILE, 'utf8');
+  return JSON.parse(fileContents);
+}
+
+function writeProductsRaw(products) {
+  fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2), 'utf8');
+}
+
+function normalizeProduct(product) {
+  if (product.category === 'Strutar' && product.stockPerSize) {
+    const totalStock = Object.values(product.stockPerSize).reduce(
+      (sum, value) => sum + Number(value || 0),
+      0
+    );
+
+    return {
+      ...product,
+      stock: totalStock
+    };
+  }
+
+  return product;
+}
+
 // -----------------------------------------------------------------------------
 // getAllProducts()
 // Returns ALL products from the JSON file as a JavaScript array.
 // No filtering, no sorting — that happens in the controller.
 // -----------------------------------------------------------------------------
 function getAllProducts() {
-  // fs.readFileSync reads the file and blocks until done (synchronous).
-  // 'utf8' tells Node to treat the file as text (not binary).
-  const fileContents = fs.readFileSync(PRODUCTS_FILE, 'utf8');
-
-  // JSON.parse converts the JSON string into a real JavaScript array of objects.
-  return JSON.parse(fileContents);
+  return readProductsRaw().map(normalizeProduct);
 }
 
 // -----------------------------------------------------------------------------
@@ -81,11 +101,49 @@ function getFeaturedProducts() {
   return featured;
 }
 
+function reduceStockForOrderItems(items) {
+  const products = readProductsRaw();
+
+  items.forEach(item => {
+    const product = products.find(p => p.id == item.productId);
+    if (!product) return;
+
+    const qty = Number(item.quantity || 0);
+    if (qty <= 0) return;
+
+    if (product.category === 'Strutar' && product.stockPerSize && item.size) {
+      const currentSizeStock = Number(product.stockPerSize[item.size] || 0);
+      product.stockPerSize[item.size] = Math.max(0, currentSizeStock - qty);
+      return;
+    }
+
+    const currentStock = Number(product.stock || 0);
+    product.stock = Math.max(0, currentStock - qty);
+  });
+
+  writeProductsRaw(products);
+}
+
+function updateProductPrice(productId, newPrice) {
+  const products = readProductsRaw();
+  const product = products.find(p => p.id == productId);
+
+  if (!product) {
+    return false;
+  }
+
+  product.price = newPrice;
+  writeProductsRaw(products);
+  return true;
+}
+
 // Export these functions so other files (controllers) can use them.
 // This is how Node.js modules share functionality.
 module.exports = {
   getAllProducts,
   getProductById,
   getProductsByCategory,
-  getFeaturedProducts
+  getFeaturedProducts,
+  reduceStockForOrderItems,
+  updateProductPrice
 };

@@ -24,6 +24,8 @@ const homeController    = require('./controllers/homeController');
 const productController = require('./controllers/productController');
 const cartController    = require('./controllers/cartController');
 const orderController   = require('./controllers/orderController');
+const authController    = require('./controllers/authController');
+const offertController  = require('./controllers/offertController');
 
 // =============================================================================
 // HOME ROUTES
@@ -63,6 +65,13 @@ router.get('/confirmation/:orderId', cartController.showConfirmation);
 router.get('/orders', orderController.showOrders);
 
 // =============================================================================
+// LOGIN ROUTES
+// =============================================================================
+router.get('/login', authController.showLogin);
+router.post('/login', authController.login);
+router.post('/logout', authController.logout);
+
+// =============================================================================
 // REORDER (B2B repeat-order feature)
 // =============================================================================
 // POST because it modifies session data (the cart)
@@ -73,6 +82,13 @@ router.post('/reorder/:orderId', cartController.reorder);
 // =============================================================================
 router.get('/admin', orderController.showAdmin);
 router.post('/admin/update-status', orderController.updateStatus);
+router.post('/admin/update-price', orderController.updatePrice);
+
+// =============================================================================
+// OFFERT ROUTES
+// =============================================================================
+router.get('/offert', offertController.showOffertForm);
+router.post('/offert', offertController.submitOffert);
 
 // Export the router so app.js can use it
 module.exports = router;

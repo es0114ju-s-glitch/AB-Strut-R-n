@@ -64,6 +64,12 @@ app.use(session({
   saveUninitialized: false // Don't create a session until something is stored in it
 }));
 
+app.use((req, res, next) => {
+  res.locals.customerNumber = req.session.customerNumber || null;
+  res.locals.cartCount = req.session.cart ? req.session.cart.length : 0;
+  next();
+});
+
 // =============================================================================
 // ROUTES
 // =============================================================================
