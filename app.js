@@ -66,6 +66,7 @@ app.use(session({
 
 app.use((req, res, next) => {
   res.locals.customerNumber = req.session.customerNumber || null;
+  res.locals.isAdmin = req.session.isAdmin === true;
   res.locals.cartCount = req.session.cart ? req.session.cart.length : 0;
   next();
 });
@@ -93,7 +94,8 @@ app.use((req, res) => {
 // =============================================================================
 // START THE SERVER
 // =============================================================================
-const PORT = process.env.PORT || 3000;
+const DEFAULT_PORT = 3000;
+const initialPort = Number(process.env.PORT) || DEFAULT_PORT;
 
 // Make startup failures explicit instead of letting Node crash without context.
 process.on('unhandledRejection', (error) => {
@@ -104,21 +106,25 @@ process.on('uncaughtException', (error) => {
   console.error('Ohanterat undantag:', error);
 });
 
-// app.listen() starts the server and makes it listen for incoming connections.
-// The callback function runs once when the server is ready.
-const server = app.listen(PORT, () => {
-  console.log('=================================================');
-  console.log('  AB Strut & Rån – Webbserver startad!');
-  console.log(`  Öppna: http://localhost:${PORT}`);
-  console.log(`  Admin: http://localhost:${PORT}/admin`);
-  console.log('=================================================');
-});
+function startServer(port) {
+  const server = app.listen(port, () => {
+    console.log('=================================================');
+    console.log('  AB Strut & Rån – Webbserver startad!');
+    console.log(`  Öppna: http://localhost:${port}`);
+    console.log(`  Admin: http://localhost:${port}/admin`);
+    console.log('=================================================');
+  });
 
-server.on('error', (error) => {
-  if (error.code === 'EADDRINUSE') {
-    console.error(`Port ${PORT} används redan. Stäng den andra processen eller sätt en annan PORT.`);
-    return;
-  }
+  server.on('error', (error) => {
+    if (error.code === 'EADDRINUSE') {
+      const nextPort = port + 1;
+      console.warn(`Port ${port} används redan. Försöker med port ${nextPort}...`);
+      startServer(nextPort);
+      return;
+    }
 
-  console.error('Kunde inte starta servern:', error);
-});
+    console.error('Kunde inte starta servern:', error);
+  });
+}
+
+startServer(initialPort);

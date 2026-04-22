@@ -38,6 +38,16 @@ node --watch app.js
 
 ---
 
+## Admin-inloggning (Version 1)
+
+- Login-sida: `GET /admin/login`
+- Lösenord: `strutraan2024`
+- Admin logout: `GET /admin/logout`
+
+Obs: Detta är en enkel demonstrationslösning med hårdkodat lösenord för utbildningssyfte.
+
+---
+
 ## MVC-mappstruktur
 
 ```
@@ -149,7 +159,7 @@ Kioskkunder beställer ofta från telefon eller surfplatta under arbetsdagen. Al
 
 - **Sessioner**: Kundvagnen lagras i `express-session` (server-minnet). Den försvinner när servern startas om. En produktionssajt skulle använda en persistent session-store (t.ex. Redis eller en databas).
 - **JSON-databas**: Enkel och utan konfiguration — perfekt för inlärning. Byt ut `productModel.js` och `orderModel.js` mot databasanrop för att uppgradera.
-- **Ingen inloggning**: Admin-sidan skyddas inte. I en riktig sajt skulle `/admin` kräva autentisering.
+- **Admin-inloggning (V1)**: `/admin` skyddas med session och hårdkodat lösenord. I en riktig sajt bör lösenord hash:as (bcrypt) och lagras säkert i databas.
 
 ---
 
