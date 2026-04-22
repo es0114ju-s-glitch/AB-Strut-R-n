@@ -20,6 +20,11 @@
    Custom properties let us change colours in one place — it cascades everywhere.
    ============================================================================= */
 :root {
+  --color-bg: #faf6f0;
+  --color-primary: #7b4f2e;
+  --color-accent-pink: #f8c8d4;
+  --color-accent-mint: #c8e6d4;
+  --color-accent-yellow: #fde9a2;
   --brand-yellow:   #f5c542;
   --brand-dark:     #1a1a1a;
   --brand-cream:    #fdf8f0;
@@ -36,8 +41,12 @@
    ============================================================================= */
 body {
   font-family: var(--font-body);
-  background-color: #f8f9fa;
+  background-color: var(--color-bg);
   color: #212529;
+}
+
+.main-navbar {
+  background-color: var(--color-primary);
 }
 
 h1, h2, h3 {
@@ -51,7 +60,7 @@ h1, h2, h3 {
 .hero-banner {
   position: relative;
   min-height: 520px;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d3748 50%, #1a365d 100%);
+  background: linear-gradient(135deg, #7b4f2e 0%, #9f6c46 55%, #6a4227 100%);
   overflow: hidden;
 }
 
@@ -68,7 +77,7 @@ h1, h2, h3 {
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 70% 50%, rgba(245,197,66,0.12) 0%, transparent 60%);
+  background: radial-gradient(ellipse at 70% 50%, rgba(248, 200, 212, 0.2) 0%, transparent 60%);
 }
 
 /* =============================================================================
@@ -78,6 +87,7 @@ h1, h2, h3 {
 .product-card {
   border-radius: var(--radius-card);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  cursor: pointer;
 }
 
 .product-card:hover {
@@ -88,14 +98,50 @@ h1, h2, h3 {
 /* Product image placeholder area */
 .product-img-placeholder {
   height: 200px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, var(--color-accent-yellow) 0%, var(--color-accent-mint) 100%);
   border-radius: var(--radius-card) var(--radius-card) 0 0;
 }
 
 /* Larger image area on the detail page */
 .product-detail-img {
   height: 380px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, var(--color-accent-pink) 0%, var(--color-accent-mint) 100%);
+}
+
+.btn-dark {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.btn-dark:hover,
+.btn-dark:focus {
+  background-color: #684227;
+  border-color: #684227;
+}
+
+.btn-warning {
+  background-color: var(--color-accent-yellow);
+  border-color: #f3db8c;
+  color: #3f2a18;
+}
+
+.btn-warning:hover,
+.btn-warning:focus {
+  background-color: #f0dd96;
+  border-color: #e7d284;
+  color: #3f2a18;
+}
+
+.bg-warning {
+  background-color: var(--color-accent-yellow) !important;
+}
+
+.bg-accent-yellow {
+  background-color: var(--color-accent-yellow) !important;
+}
+
+.text-info-dark {
+  color: #1a3a5c !important;
 }
 
 /* Category link cards on home page */
@@ -111,13 +157,13 @@ h1, h2, h3 {
 }
 
 /* =============================================================================
-   5. LARGER TAP TARGETS FOR MOBILE
-   /* Larger tap targets for kiosk workers using phones/tablets */
-   Kiosk workers often wear gloves or have wet/cold hands.
-   Apple and Google guidelines recommend minimum 44×44px tap targets.
-   btn-lg in Bootstrap gives ~48px height — good for fingers.
-   We add some extra padding to filter buttons too.
-   ============================================================================= */
+  5. LARGER TAP TARGETS FOR MOBILE
+  Larger tap targets for kiosk workers using phones/tablets.
+  Kiosk workers often wear gloves or have wet/cold hands.
+  Apple and Google guidelines recommend minimum 44×44px tap targets.
+  btn-lg in Bootstrap gives ~48px height — good for fingers.
+  We add some extra padding to filter buttons too.
+  ============================================================================= */
 .filter-btn {
   padding: 0.5rem 1.1rem;
   font-size: 0.95rem;

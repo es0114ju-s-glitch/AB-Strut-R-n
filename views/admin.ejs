@@ -4,7 +4,7 @@
   <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
     <div>
       <h1 class="fw-bold mb-1" style="font-family:'Fraunces',serif">
-        <i class="bi bi-gear me-2 text-warning"></i>Admin – Orderhantering
+        <i class="bi bi-gear me-2 text-info-dark"></i>Admin – Orderhantering
       </h1>
       <p class="text-muted mb-0">
         <%= orders.length %> order(s) totalt. Uppdatera leveransstatus här — kunder ser sin status via "Mina ordrar".
@@ -13,6 +13,39 @@
     <span class="badge bg-danger fs-6 px-3 py-2">
       <i class="bi bi-shield-lock me-1"></i>Intern vy
     </span>
+  </div>
+
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="fw-bold mb-3">Prisuppdatering</h5>
+      <p class="text-muted small mb-3">Uppdatera pris direkt i systemet utan att ändra JSON manuellt.</p>
+      <div class="table-responsive">
+        <table class="table table-sm align-middle">
+          <thead>
+            <tr>
+              <th>Produkt</th>
+              <th>Kategori</th>
+              <th style="width:220px">Nytt pris (kr)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% products.forEach(function(product) { %>
+              <tr>
+                <td><strong><%= product.name %></strong></td>
+                <td><span class="text-muted"><%= product.category %></span></td>
+                <td>
+                  <form action="/admin/update-price" method="POST" class="d-flex gap-2">
+                    <input type="hidden" name="productId" value="<%= product.id %>">
+                    <input type="number" min="0" step="1" class="form-control form-control-sm" name="price" value="<%= product.price %>" required>
+                    <button type="submit" class="btn btn-sm btn-dark">Spara</button>
+                  </form>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <!-- Status summary stats -->
@@ -149,7 +182,7 @@
   <!-- Delivery address overview (useful for staff planning routes) -->
   <% if (orders.length > 0) { %>
     <div class="mt-4 p-3 bg-light rounded-3 small text-muted">
-      <i class="bi bi-info-circle me-1"></i>
+      <i class="bi bi-info-circle me-1 text-info-dark"></i>
       Tips: Kunder ser sin orderstatus live via <strong>/orders?customer=KUNDNUMMER</strong>.
       Uppdatera status direkt när ordern hanteras för att minimera kundsamtal.
     </div>

@@ -27,7 +27,7 @@
      
      navbar-expand-md = show full navbar on medium+ screens, hamburger on small
      ========================================================================== -->
-<nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top shadow-sm">
+<nav class="navbar navbar-expand-md navbar-dark sticky-top shadow-sm main-navbar">
   <div class="container">
     
     <!-- Logo / Brand link -->
@@ -56,6 +56,20 @@
         <li class="nav-item">
           <a class="nav-link" href="/orders">Mina ordrar</a>
         </li>
+        <% if (customerNumber) { %>
+          <li class="nav-item">
+            <span class="nav-link disabled">Kund: <%= customerNumber %></span>
+          </li>
+          <li class="nav-item d-flex align-items-center">
+            <form action="/logout" method="POST" class="ms-md-2">
+              <button type="submit" class="btn btn-outline-light btn-sm">Logga ut</button>
+            </form>
+          </li>
+        <% } else { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Logga in</a>
+          </li>
+        <% } %>
         <li class="nav-item">
           <!-- Cart link with item count badge -->
           <!-- cartCount is passed from every controller via res.render() -->

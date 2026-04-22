@@ -2,9 +2,15 @@
 
 <div class="container">
   <h1 class="fw-bold mb-2" style="font-family:'Fraunces',serif">
-    <i class="bi bi-clock-history me-2 text-warning"></i>Mina ordrar
+    <i class="bi bi-clock-history me-2 text-info-dark"></i>Mina ordrar
   </h1>
-  <p class="text-muted mb-4">Ange ditt kundnummer för att se din orderhistorik.</p>
+  <p class="text-muted mb-4">
+    <% if (fromSession) { %>
+      Visar orderhistorik för inloggat kundnummer <strong><%= customerNumber %></strong>.
+    <% } else { %>
+      Ange ditt kundnummer för att se din orderhistorik.
+    <% } %>
+  </p>
 
   <!-- ========================================================================
        CUSTOMER NUMBER SEARCH FORM
@@ -119,7 +125,13 @@
                   </div>
                   <div class="col-6 col-md-3">
                     <div class="text-muted small">Leveransadress</div>
-                    <div class="small"><%= order.deliveryAddress %></div>
+                    <div class="small">
+                      <% if (typeof order.deliveryAddress === 'string') { %>
+                        <%= order.deliveryAddress %>
+                      <% } else { %>
+                        <%= order.deliveryAddress.street %>, <%= order.deliveryAddress.zip %> <%= order.deliveryAddress.city %>
+                      <% } %>
+                    </div>
                   </div>
                   <div class="col-6 col-md-3">
                     <div class="text-muted small">E-post</div>

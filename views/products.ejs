@@ -46,6 +46,7 @@
       
       <!-- Each product card has data-category so JS can show/hide it -->
       <div class="col-12 col-md-6 col-lg-4 product-item" data-category="<%= product.category %>">
+        <a href="/products/<%= product.id %>" class="text-decoration-none text-reset d-block h-100">
         <div class="card h-100 border-0 shadow-sm product-card">
           
           <!-- Image placeholder -->
@@ -101,14 +102,12 @@
               <% } %>
             </div>
 
-            <!-- Spacer to push button to bottom of card -->
-            <div class="mt-auto">
-              <a href="/products/<%= product.id %>" class="btn btn-dark w-100">
-                Visa produkt <i class="bi bi-arrow-right ms-1"></i>
-              </a>
+            <div class="mt-auto pt-2 small fw-semibold text-uppercase" style="letter-spacing:0.04em">
+              Visa produkt <i class="bi bi-arrow-right ms-1"></i>
             </div>
           </div>
         </div>
+        </a>
       </div>
 
     <% }); %>

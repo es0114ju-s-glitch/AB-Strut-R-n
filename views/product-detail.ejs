@@ -47,8 +47,12 @@
       </p>
 
       <!-- Stock badge -->
-      <div class="mb-4">
-        <% if (product.stock === 0) { %>
+      <div class="mb-4" id="stock-badge-wrap">
+        <% if (product.category === 'Strutar' && product.stockPerSize) { %>
+          <span class="badge bg-secondary fs-6" id="size-stock-badge">
+            <i class="bi bi-rulers me-1"></i>Välj storlek för att se lagersaldo
+          </span>
+        <% } else if (product.stock === 0) { %>
           <span class="badge bg-danger fs-6">
             <i class="bi bi-x-circle me-1"></i>Slut i lager
           </span>
@@ -70,7 +74,15 @@
            This form POSTs to /cart/add with product details.
            The form only shows size/angle options for relevant categories.
            ==================================================================== -->
-      <% if (product.stock > 0) { %>
+      <% if (product.category === 'Glassmaskiner') { %>
+        <div class="bg-light rounded-3 p-4 border">
+          <h5 class="fw-bold mb-2">Begär offert</h5>
+          <p class="text-muted mb-3">Maskiner kräver behovsanalys, installation och planering innan köp.</p>
+          <a href="/offert?productId=<%= product.id %>" class="btn btn-primary btn-lg fw-semibold">
+            <i class="bi bi-file-earmark-text me-2"></i>Begär offert
+          </a>
+        </div>
+      <% } else if (product.stock > 0) { %>
         <form action="/cart/add" method="POST" class="bg-light rounded-3 p-4 border">
           <!-- Hidden field: tells the controller WHICH product is being added -->
           <input type="hidden" name="productId" value="<%= product.id %>">
@@ -91,25 +103,14 @@
               </label>
               <select class="form-select" name="size" id="size" required>
                 <option value="">-- Välj storlek --</option>
-                <option value="45mm">45mm – Miniatyr (barnportioner)</option>
-                <option value="52mm">52mm – Liten</option>
-                <option value="57mm">57mm – Liten standard</option>
-                <option value="60mm">60mm – Kompakt</option>
-                <option value="65mm">65mm – Mellanstor</option>
-                <option value="70mm">70mm – Vanlig (äldre maskiner)</option>
-                <option value="75mm">75mm – Standard (passar de flesta maskiner)</option>
-                <option value="80mm">80mm – Standard plus</option>
-                <option value="85mm">85mm – Stor standard</option>
-                <option value="90mm">90mm – Stor</option>
-                <option value="95mm">95mm – Extra stor</option>
-                <option value="100mm">100mm – Professional</option>
-                <option value="105mm">105mm – Professional plus</option>
-                <option value="110mm">110mm – Industrial</option>
-                <option value="115mm">115mm – Industrial plus</option>
-                <option value="120mm">120mm – Maximal (storvolymsmaskiner)</option>
+                <% product.availableSizes.forEach(function(sizeOption) { %>
+                  <option value="<%= sizeOption %>" data-stock="<%= product.stockPerSize && product.stockPerSize[sizeOption] != null ? product.stockPerSize[sizeOption] : 0 %>">
+                    <%= sizeOption %>
+                  </option>
+                <% }); %>
               </select>
               <div class="form-text">
-                <i class="bi bi-info-circle me-1"></i>
+                <i class="bi bi-info-circle me-1 text-info-dark"></i>
                 Osäker på storleken? Kolla i din maskins manual eller ring oss på 040-12 34 56.
               </div>
             </div>
@@ -153,7 +154,7 @@
           </div>
 
           <!-- Submit button — btn-lg for easier tapping on phones -->
-          <button type="submit" class="btn btn-warning btn-lg fw-semibold me-2">
+          <button type="submit" class="btn btn-warning btn-lg fw-semibold me-2" id="add-to-cart-btn">
             <i class="bi bi-cart-plus me-2"></i>Lägg i kundvagn
           </button>
           <a href="/products" class="btn btn-outline-secondary btn-lg">
@@ -175,5 +176,61 @@
     </div>
   </div>
 </div>
+
+<% if (addedToCart) { %>
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080">
+    <div id="addedToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">Produkten har lagts till i kundvagnen ✓</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+<% } %>
+
+<script>
+  const sizeSelect = document.getElementById('size');
+  const sizeStockBadge = document.getElementById('size-stock-badge');
+  const addToCartBtn = document.getElementById('add-to-cart-btn');
+
+  if (sizeSelect && sizeStockBadge) {
+    function updateStockBadge() {
+      const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
+      const stockValue = Number(selectedOption ? selectedOption.getAttribute('data-stock') : NaN);
+
+      if (!selectedOption || !selectedOption.value) {
+        sizeStockBadge.className = 'badge bg-secondary fs-6';
+        sizeStockBadge.innerHTML = '<i class="bi bi-rulers me-1"></i>Välj storlek för att se lagersaldo';
+        if (addToCartBtn) addToCartBtn.disabled = true;
+        return;
+      }
+
+      if (!Number.isFinite(stockValue) || stockValue <= 0) {
+        sizeStockBadge.className = 'badge bg-danger fs-6';
+        sizeStockBadge.innerHTML = '<i class="bi bi-x-circle me-1"></i>Slut i lager - ' + selectedOption.value;
+        if (addToCartBtn) addToCartBtn.disabled = true;
+      } else if (stockValue < 20) {
+        sizeStockBadge.className = 'badge bg-warning text-dark fs-6';
+        sizeStockBadge.innerHTML = '<i class="bi bi-exclamation-circle me-1"></i>Få kvar - ' + selectedOption.value + ' (' + stockValue + ' st)';
+        if (addToCartBtn) addToCartBtn.disabled = false;
+      } else {
+        sizeStockBadge.className = 'badge bg-success fs-6';
+        sizeStockBadge.innerHTML = '<i class="bi bi-check-circle me-1"></i>I lager - ' + selectedOption.value + ' (' + stockValue + ' st)';
+        if (addToCartBtn) addToCartBtn.disabled = false;
+      }
+    }
+
+    sizeSelect.addEventListener('change', updateStockBadge);
+    updateStockBadge();
+  }
+
+  window.addEventListener('load', function() {
+    const addedToast = document.getElementById('addedToast');
+    if (addedToast && window.bootstrap) {
+      const toast = new bootstrap.Toast(addedToast, { delay: 2600 });
+      toast.show();
+    }
+  });
+</script>
 
 <%- include('partials/footer') %>
