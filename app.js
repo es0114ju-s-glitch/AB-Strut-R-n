@@ -64,6 +64,17 @@ app.use(session({
   saveUninitialized: false // Don't create a session until something is stored in it
 }));
 
+// Simple flash middleware using session (no external dependency)
+app.use((req, res, next) => {
+  if (req.session && req.session.flash) {
+    res.locals.flash = req.session.flash;
+    delete req.session.flash;
+  } else {
+    res.locals.flash = null;
+  }
+  next();
+});
+
 // =============================================================================
 // ROUTES
 // =============================================================================

@@ -82,7 +82,67 @@
         <div class="card border-0 shadow-sm">
           <div class="card-body p-4">
             <h5 class="fw-bold mb-4" style="font-family:'Fraunces',serif">Ordersammanfattning</h5>
-            
+            <!-- Saved templates (standard orders / inköpslistor) -->
+            <form action="/templates/save" method="POST" class="mb-3">
+              <div class="input-group">
+                <input type="text" name="name" class="form-control" placeholder="Namn på inköpslista (ex. Veckans beställning)">
+                <input type="text" name="customerNumber" class="form-control" placeholder="Kundnummer (valfritt)" value="<%= defaultCustomerNumber %>">
+                <button class="btn btn-outline-secondary" type="submit">Spara som inköpslista</button>
+              </div>
+            </form>
+
+            <% if (templates && templates.length > 0) { %>
+              <form action="/templates/apply" method="POST" class="mb-3 d-flex">
+                <select name="templateId" class="form-select me-2">
+                  <% templates.forEach(function(tpl) { %>
+                      <option value="<%= tpl.id %>"><%= tpl.name %> — <%= tpl.createdAt.split('T')[0] %></option>
+                    <% }); %>
+                </select>
+                <select name="applyMode" class="form-select me-2">
+                  <option value="replace">Ersätt kundvagn</option>
+                  <option value="merge">Lägg till ovanpå</option>
+                </select>
+                <input type="text" name="applyCustomerNumber" class="form-control me-2" placeholder="Kundnummer (valfritt)" value="<%= defaultCustomerNumber %>">
+                <!-- We use JS to submit to the correct apply URL when clicking the button -->
+                <button id="applyTemplateBtn" type="button" class="btn btn-outline-primary">Använd</button>
+              </form>
+              <form id="deleteTemplateForm" action="/templates/delete" method="POST">
+                <!-- delete form populated by JS when user chooses to delete -->
+              </form>
+              <script>
+                // Small client-side helper: when pressing 'Använd', redirect to
+                // the POST route /templates/apply/:id by creating a form and submitting it.
+                document.getElementById('applyTemplateBtn').addEventListener('click', function() {
+                  const sel = document.querySelector('select[name="templateId"]');
+                  if (!sel) return;
+                  const id = sel.value;
+                  const modeSel = document.querySelector('select[name="applyMode"]');
+                  const mode = modeSel ? modeSel.value : 'replace';
+                  const cust = document.querySelector('input[name="applyCustomerNumber"]');
+                  const custVal = cust ? cust.value : '';
+
+                  const form = document.createElement('form');
+                  form.method = 'POST';
+                  form.action = '/templates/apply/' + encodeURIComponent(id);
+
+                  const modeInput = document.createElement('input');
+                  modeInput.type = 'hidden';
+                  modeInput.name = 'mode';
+                  modeInput.value = mode;
+                  form.appendChild(modeInput);
+
+                  const custInput = document.createElement('input');
+                  custInput.type = 'hidden';
+                  custInput.name = 'customerNumber';
+                  custInput.value = custVal;
+                  form.appendChild(custInput);
+
+                  document.body.appendChild(form);
+                  form.submit();
+                });
+              </script>
+            <% } %>
+
             <div class="d-flex justify-content-between mb-2">
               <span class="text-muted">Delsumma (<%= cart.length %> rader)</span>
               <span><%= total.toLocaleString('sv-SE') %> kr</span>

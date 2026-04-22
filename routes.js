@@ -46,6 +46,21 @@ router.get('/cart', cartController.showCart);
 router.post('/cart/add', cartController.addToCart);
 router.post('/cart/remove', cartController.removeFromCart);
 
+// -----------------------------------------------------------------------------
+// SAVED TEMPLATES / STANDARD ORDERS
+// Users can save the current cart as a named template, apply one to pre-fill
+// the cart, or delete a saved template.
+// -----------------------------------------------------------------------------
+router.post('/templates/save', cartController.saveTemplate);
+router.post('/templates/apply/:id', cartController.applyTemplate);
+router.post('/templates/delete/:id', cartController.deleteTemplate);
+
+// Templates management page
+router.get('/templates', cartController.showTemplates);
+router.post('/templates/update/:id', cartController.updateTemplate);
+router.get('/templates/edit/:id', cartController.showEditTemplate);
+router.post('/templates/edit/:id', cartController.editTemplate);
+
 // =============================================================================
 // CHECKOUT ROUTES
 // =============================================================================

@@ -1,0 +1,83 @@
+[
+  {
+    "id": "TPL-1776671080515",
+    "name": "Standard1",
+    "items": [
+      {
+        "productId": 1,
+        "name": "Klassisk Strut – Standard",
+        "category": "Strutar",
+        "size": "57mm",
+        "angle": null,
+        "quantity": 1,
+        "unitPrice": 59,
+        "subtotal": 59
+      },
+      {
+        "productId": 3,
+        "name": "Rånet – Klassisk",
+        "category": "Rån",
+        "size": "Trekulors",
+        "angle": "Smal",
+        "quantity": 100,
+        "unitPrice": 75,
+        "subtotal": 7500
+      }
+    ],
+    "createdAt": "2026-04-20T07:44:40.515Z"
+  },
+  {
+    "id": "TPL-1776671745948",
+    "name": "Standard",
+    "owner": "1",
+    "items": [
+      {
+        "productId": 3,
+        "name": "Rånet – Klassisk",
+        "category": "Rån",
+        "size": "Trekulors",
+        "angle": "Medium",
+        "quantity": 100,
+        "unitPrice": 75,
+        "subtotal": 7500
+      }
+    ],
+    "createdAt": "2026-04-20T07:55:45.948Z"
+  },
+  {
+    "id": "TPL-1776672728595",
+    "name": "1",
+    "owner": "2",
+    "items": [
+      {
+        "productId": 1,
+        "name": "Klassisk Strut – Standard",
+        "category": "Strutar",
+        "size": "57mm",
+        "angle": null,
+        "quantity": 1,
+        "unitPrice": 59,
+        "subtotal": 59
+      }
+    ],
+    "createdAt": "2026-04-20T08:12:08.595Z"
+  },
+  {
+    "id": "TPL-1776845724880",
+    "name": "Standard",
+    "owner": "1",
+    "items": [
+      {
+        "productId": 1,
+        "name": "Klassisk Strut – Standard",
+        "category": "Strutar",
+        "size": "60mm",
+        "angle": null,
+        "quantity": 1,
+        "unitPrice": 59,
+        "subtotal": 59
+      }
+    ],
+    "createdAt": "2026-04-22T08:15:24.880Z"
+  }
+]

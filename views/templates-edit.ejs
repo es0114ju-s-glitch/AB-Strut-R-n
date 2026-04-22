@@ -1,0 +1,80 @@
+<%- include('partials/header') %>
+
+<div class="container">
+  <h1 class="fw-bold mb-4">Redigera inköpslista: <%= template.name %></h1>
+
+  <form method="POST" action="/templates/edit/<%= template.id %>">
+    <input type="hidden" name="customerNumber" value="<%= customerNumber %>">
+
+    <div class="mb-3">
+      <label class="form-label">Namn på inköpslista</label>
+      <input type="text" name="name" class="form-control" value="<%= template.name %>">
+    </div>
+
+    <h5>Rader</h5>
+    <p class="text-muted">Sätt antal till 0 för att ta bort en rad.</p>
+
+    <div class="list-group mb-3">
+      <% template.items.forEach(function(it, i) { %>
+        <div class="list-group-item">
+          <div class="row g-2 align-items-center">
+            <div class="col-md-5">
+              <label class="form-label">Produkt</label>
+              <input type="text" class="form-control" value="<%= it.name %>" disabled>
+              <input type="hidden" name="item_productId" value="<%= it.productId %>">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Antal</label>
+              <input type="number" name="item_quantity" class="form-control" value="<%= it.quantity %>" min="0">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Storlek</label>
+              <input type="text" name="item_size" class="form-control" value="<%= it.size || '' %>">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Vinkel</label>
+              <input type="text" name="item_angle" class="form-control" value="<%= it.angle || '' %>">
+            </div>
+            <div class="col-md-1">
+              <label class="form-label"> </label>
+              <div><span class="badge bg-secondary"> <%= it.unitPrice %> kr</span></div>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+
+    <h5>Lägg till ny rad</h5>
+    <div class="row g-2 mb-3">
+      <div class="col-md-6">
+        <label class="form-label">Produkt (välj)</label>
+        <select name="add_productId" class="form-select">
+          <option value="">Välj produkt att lägga till</option>
+          <% products.forEach(function(p) { %>
+            <option value="<%= p.id %>"><%= p.name %> — <%= p.category %> — <%= p.price %> kr</option>
+          <% }); %>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Antal</label>
+        <input type="number" name="add_quantity" class="form-control" min="1" value="1">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Storlek</label>
+        <input type="text" name="add_size" class="form-control">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Vinkel</label>
+        <input type="text" name="add_angle" class="form-control">
+      </div>
+    </div>
+
+    <div class="d-flex gap-2">
+      <button class="btn btn-primary" type="submit">Spara ändringar</button>
+      <a href="/templates" class="btn btn-outline-secondary">Avbryt</a>
+    </div>
+  </form>
+
+</div>
+
+<%- include('partials/footer') %>

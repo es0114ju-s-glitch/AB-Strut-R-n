@@ -1,0 +1,65 @@
+<%- include('partials/header') %>
+
+<div class="container">
+  <h1 class="fw-bold mb-4">Hantera inköpslistor</h1>
+
+  <form class="row g-2 mb-4" method="GET" action="/templates">
+    <div class="col-auto">
+      <input type="text" name="customer" class="form-control" placeholder="Kundnummer (t.ex. K1042)" value="<%= customerNumber %>">
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-primary" type="submit">Visa mina listor</button>
+    </div>
+    <div class="col-auto">
+      <a href="/cart" class="btn btn-outline-secondary">Tillbaka till kundvagn</a>
+    </div>
+  </form>
+
+  <% if (!customerNumber) { %>
+    <div class="alert alert-info">Skriv in ditt kundnummer ovan för att se och hantera dina sparade inköpslistor.</div>
+  <% } else if (templates.length === 0) { %>
+    <div class="alert alert-secondary">Inga sparade inköpslistor hittades för <strong><%= customerNumber %></strong>.</div>
+  <% } else { %>
+    <div class="list-group">
+      <% templates.forEach(function(tpl) { %>
+        <div class="list-group-item">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1"><%= tpl.name %></h5>
+            <small class="text-muted"><%= tpl.createdAt.split('T')[0] %></small>
+          </div>
+          <p class="mb-1">
+            <% tpl.items.forEach(function(it, i) { %>
+              <div><strong><%= it.name %></strong> — <%= it.quantity %> st</div>
+            <% }); %>
+          </p>
+
+          <div class="mt-2 d-flex gap-2">
+            <form method="POST" action="/templates/update/<%= tpl.id %>" class="d-inline">
+              <input type="hidden" name="customerNumber" value="<%= customerNumber %>">
+              <div class="input-group">
+                <input type="text" name="name" class="form-control" placeholder="Nytt namn" value="<%= tpl.name %>">
+                <button class="btn btn-sm btn-outline-primary" type="submit">Spara namn</button>
+              </div>
+            </form>
+
+            <form method="POST" action="/templates/delete/<%= tpl.id %>" onsubmit="return confirm('Ta bort inköpslistan? Detta går inte att ångra.');">
+              <input type="hidden" name="customerNumber" value="<%= customerNumber %>">
+              <button class="btn btn-sm btn-outline-danger" type="submit">Ta bort</button>
+            </form>
+
+            <form method="POST" action="/templates/apply/<%= tpl.id %>" class="ms-auto">
+              <input type="hidden" name="customerNumber" value="<%= customerNumber %>">
+              <div class="btn-group">
+                <button name="mode" value="replace" class="btn btn-sm btn-primary" type="submit">Ersätt kundvagn</button>
+                <button name="mode" value="merge" class="btn btn-sm btn-outline-primary" type="submit">Lägg till ovanpå</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  <% } %>
+
+</div>
+
+<%- include('partials/footer') %>

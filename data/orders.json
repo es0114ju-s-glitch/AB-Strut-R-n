@@ -50,5 +50,171 @@
     "status": "Mottagen",
     "createdAt": "2026-04-13T11:51:01.217Z",
     "estimatedDelivery": "2026-04-16"
+  },
+  {
+    "orderId": "ORD-1776670624960",
+    "companyName": "",
+    "customerNumber": "123",
+    "items": [
+      {
+        "productId": 1,
+        "name": "Klassisk Strut – Standard",
+        "category": "Strutar",
+        "size": "52mm",
+        "angle": null,
+        "quantity": 1,
+        "unitPrice": 59,
+        "subtotal": 59
+      }
+    ],
+    "totalPrice": 59,
+    "deliveryAddress": "",
+    "invoiceAddress": "",
+    "email": "",
+    "phone": "",
+    "message": "",
+    "status": "Mottagen",
+    "createdAt": "2026-04-20T07:37:04.960Z",
+    "estimatedDelivery": "2026-04-23"
+  },
+  {
+    "orderId": "ORD-1776670696760",
+    "companyName": "",
+    "customerNumber": "",
+    "items": [
+      {
+        "productId": 1,
+        "name": "Klassisk Strut – Standard",
+        "category": "Strutar",
+        "size": "52mm",
+        "angle": null,
+        "quantity": 1,
+        "unitPrice": 59,
+        "subtotal": 59
+      }
+    ],
+    "totalPrice": 59,
+    "deliveryAddress": "",
+    "invoiceAddress": "",
+    "email": "",
+    "phone": "",
+    "message": "",
+    "status": "Mottagen",
+    "createdAt": "2026-04-20T07:38:16.760Z",
+    "estimatedDelivery": "2026-04-23"
+  },
+  {
+    "orderId": "ORD-1776670928625",
+    "companyName": "",
+    "customerNumber": "",
+    "items": [
+      {
+        "productId": 1,
+        "name": "Klassisk Strut – Standard",
+        "category": "Strutar",
+        "size": "60mm",
+        "angle": null,
+        "quantity": 1,
+        "unitPrice": 59,
+        "subtotal": 59
+      }
+    ],
+    "totalPrice": 59,
+    "deliveryAddress": "",
+    "invoiceAddress": "",
+    "email": "",
+    "phone": "",
+    "message": "",
+    "status": "Mottagen",
+    "createdAt": "2026-04-20T07:42:08.625Z",
+    "estimatedDelivery": "2026-04-23"
+  },
+  {
+    "orderId": "ORD-1776672802113",
+    "companyName": "",
+    "customerNumber": "",
+    "items": [
+      {
+        "productId": 1,
+        "name": "Klassisk Strut – Standard",
+        "category": "Strutar",
+        "size": "57mm",
+        "angle": null,
+        "quantity": 3,
+        "unitPrice": 59,
+        "subtotal": 177
+      }
+    ],
+    "totalPrice": 177,
+    "deliveryAddress": "",
+    "invoiceAddress": "",
+    "email": "",
+    "phone": "",
+    "message": "",
+    "status": "Mottagen",
+    "createdAt": "2026-04-20T08:13:22.113Z",
+    "estimatedDelivery": "2026-04-23"
+  },
+  {
+    "orderId": "ORD-1776673231853",
+    "companyName": "",
+    "customerNumber": "1",
+    "items": [
+      {
+        "productId": 3,
+        "name": "Rånet – Klassisk",
+        "category": "Rån",
+        "size": "Trekulors",
+        "angle": "Smal",
+        "quantity": 100,
+        "unitPrice": 75,
+        "subtotal": 7500
+      }
+    ],
+    "totalPrice": 7500,
+    "deliveryAddress": "",
+    "invoiceAddress": "",
+    "email": "",
+    "phone": "",
+    "message": "",
+    "status": "Skickad",
+    "createdAt": "2026-04-20T08:20:31.853Z",
+    "estimatedDelivery": "2026-04-23"
+  },
+  {
+    "orderId": "ORD-1776845754112",
+    "companyName": "",
+    "customerNumber": "",
+    "items": [
+      {
+        "productId": 1,
+        "name": "Klassisk Strut – Standard",
+        "category": "Strutar",
+        "size": "60mm",
+        "angle": null,
+        "quantity": 1,
+        "unitPrice": 59,
+        "subtotal": 59
+      },
+      {
+        "productId": 9,
+        "name": "Mjukglassmaskin Model X200",
+        "category": "Glassmaskiner",
+        "size": null,
+        "angle": null,
+        "quantity": 6,
+        "unitPrice": 28900,
+        "subtotal": 173400
+      }
+    ],
+    "totalPrice": 173459,
+    "deliveryAddress": "",
+    "invoiceAddress": "",
+    "email": "",
+    "phone": "",
+    "message": "",
+    "status": "Mottagen",
+    "createdAt": "2026-04-22T08:15:54.112Z",
+    "estimatedDelivery": "2026-04-25"
   }
 ]
