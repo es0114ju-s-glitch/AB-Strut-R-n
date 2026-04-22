@@ -60,7 +60,18 @@ function addToCart(req, res) {
   }
 
   const qty = parseInt(quantity) || 1;
-  const unitPrice = product.price;
+  let unitPrice = Number(product.price || 0);
+
+  if (product.category === 'Strutar' && product.pricePerSize) {
+    const selectedSizePrice = Number(product.pricePerSize[size]);
+
+    if (!size || !Number.isFinite(selectedSizePrice) || selectedSizePrice < 0) {
+      return res.redirect('/products/' + product.id);
+    }
+
+    unitPrice = selectedSizePrice;
+  }
+
   const subtotal = unitPrice * qty;
 
   // Build a cart item object — includes only what we need to display

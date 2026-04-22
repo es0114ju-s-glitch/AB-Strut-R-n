@@ -14,15 +14,19 @@
 
     <!-- LEFT COLUMN: Product image -->
     <div class="col-12 col-md-5">
-      <div class="product-detail-img d-flex align-items-center justify-content-center rounded-3 shadow-sm">
-        <% if (product.category === 'Strutar') { %>
-          <span style="font-size:8rem">🍦</span>
-        <% } else if (product.category === 'Rån') { %>
-          <span style="font-size:8rem">🥐</span>
-        <% } else if (product.category === 'Bägare') { %>
-          <span style="font-size:8rem">🥤</span>
+      <div class="product-detail-img d-flex align-items-center justify-content-center rounded-3 shadow-sm overflow-hidden">
+        <% if (product.image) { %>
+          <img src="<%= product.image %>" alt="<%= product.name %>" class="w-100 h-100" style="object-fit:cover;">
         <% } else { %>
-          <span style="font-size:8rem">⚙️</span>
+          <% if (product.category === 'Strutar') { %>
+            <span style="font-size:8rem">🍦</span>
+          <% } else if (product.category === 'Rån') { %>
+            <span style="font-size:8rem">🥐</span>
+          <% } else if (product.category === 'Bägare') { %>
+            <span style="font-size:8rem">🥤</span>
+          <% } else { %>
+            <span style="font-size:8rem">⚙️</span>
+          <% } %>
         <% } %>
       </div>
 
@@ -42,7 +46,7 @@
       
       <!-- Price -->
       <p class="fs-2 fw-bold text-dark mb-1">
-        <%= product.price.toLocaleString('sv-SE') %> kr
+        <span id="product-price-value"><%= product.price.toLocaleString('sv-SE') %></span> kr
         <small class="fs-6 text-muted fw-normal">exkl. moms / förpackning</small>
       </p>
 
@@ -104,7 +108,11 @@
               <select class="form-select" name="size" id="size" required>
                 <option value="">-- Välj storlek --</option>
                 <% product.availableSizes.forEach(function(sizeOption) { %>
-                  <option value="<%= sizeOption %>" data-stock="<%= product.stockPerSize && product.stockPerSize[sizeOption] != null ? product.stockPerSize[sizeOption] : 0 %>">
+                  <option
+                    value="<%= sizeOption %>"
+                    data-stock="<%= product.stockPerSize && product.stockPerSize[sizeOption] != null ? product.stockPerSize[sizeOption] : 0 %>"
+                    data-price="<%= product.pricePerSize && product.pricePerSize[sizeOption] != null ? product.pricePerSize[sizeOption] : product.price %>"
+                  >
                     <%= sizeOption %>
                   </option>
                 <% }); %>
@@ -190,6 +198,7 @@
 
 <script>
   const sizeSelect = document.getElementById('size');
+  const productPriceValue = document.getElementById('product-price-value');
   const sizeStockBadge = document.getElementById('size-stock-badge');
   const addToCartBtn = document.getElementById('add-to-cart-btn');
 
@@ -201,8 +210,16 @@
       if (!selectedOption || !selectedOption.value) {
         sizeStockBadge.className = 'badge bg-secondary fs-6';
         sizeStockBadge.innerHTML = '<i class="bi bi-rulers me-1"></i>Välj storlek för att se lagersaldo';
+        if (productPriceValue) {
+          productPriceValue.textContent = '<%= product.price.toLocaleString('sv-SE') %>';
+        }
         if (addToCartBtn) addToCartBtn.disabled = true;
         return;
+      }
+
+      const sizePrice = Number(selectedOption.getAttribute('data-price'));
+      if (productPriceValue && Number.isFinite(sizePrice)) {
+        productPriceValue.textContent = sizePrice.toLocaleString('sv-SE');
       }
 
       if (!Number.isFinite(stockValue) || stockValue <= 0) {

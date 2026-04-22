@@ -136,8 +136,16 @@ function normalizeProduct(product) {
       0
     );
 
+    // Each size has its own price because larger cones use more material — pricePerSize replaces the flat price
+    const sizePrices = product.pricePerSize ? Object.values(product.pricePerSize) : [];
+    const fallbackPrice = Number(product.price || 0);
+    const minSizePrice = sizePrices.length > 0
+      ? Math.min(...sizePrices.map(value => Number(value || 0)))
+      : fallbackPrice;
+
     return {
       ...product,
+      price: minSizePrice,
       stock: totalStock
     };
   }
@@ -225,7 +233,7 @@ function reduceStockForOrderItems(items) {
   writeProductsRaw(products);
 }
 
-function updateProductPrice(productId, newPrice) {
+function updateProductPrice(productId, pricingData) {
   const products = readProductsRaw();
   const product = products.find(p => p.id == productId);
 
@@ -233,7 +241,12 @@ function updateProductPrice(productId, newPrice) {
     return false;
   }
 
-  product.price = newPrice;
+  if (product.category === 'Strutar') {
+    product.pricePerSize = { ...pricingData.pricePerSize };
+  } else {
+    product.price = Number(pricingData.price);
+  }
+
   writeProductsRaw(products);
   return true;
 }

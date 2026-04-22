@@ -19,31 +19,53 @@
     <div class="card-body">
       <h5 class="fw-bold mb-3">Prisuppdatering</h5>
       <p class="text-muted small mb-3">Uppdatera pris direkt i systemet utan att ändra JSON manuellt.</p>
-      <div class="table-responsive">
-        <table class="table table-sm align-middle">
-          <thead>
-            <tr>
-              <th>Produkt</th>
-              <th>Kategori</th>
-              <th style="width:220px">Nytt pris (kr)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% products.forEach(function(product) { %>
-              <tr>
-                <td><strong><%= product.name %></strong></td>
-                <td><span class="text-muted"><%= product.category %></span></td>
-                <td>
-                  <form action="/admin/update-price" method="POST" class="d-flex gap-2">
-                    <input type="hidden" name="productId" value="<%= product.id %>">
-                    <input type="number" min="0" step="1" class="form-control form-control-sm" name="price" value="<%= product.price %>" required>
-                    <button type="submit" class="btn btn-sm btn-dark">Spara</button>
-                  </form>
-                </td>
-              </tr>
-            <% }); %>
-          </tbody>
-        </table>
+      <div class="d-grid gap-3">
+        <% products.forEach(function(product) { %>
+          <form action="/admin/update-price" method="POST" class="border rounded-3 p-3 bg-light-subtle">
+            <input type="hidden" name="productId" value="<%= product.id %>">
+
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+              <div>
+                <strong><%= product.name %></strong>
+                <div class="small text-muted"><%= product.category %></div>
+              </div>
+            </div>
+
+            <% if (product.category === 'Strutar' && product.availableSizes && product.pricePerSize) { %>
+              <div class="row g-2 mb-3">
+                <% product.availableSizes.forEach(function(sizeOption) { %>
+                  <div class="col-6 col-md-3">
+                    <label class="form-label form-label-sm mb-1"><%= sizeOption %></label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="1"
+                      class="form-control form-control-sm"
+                      name="pricePerSize[<%= sizeOption %>]"
+                      value="<%= product.pricePerSize[sizeOption] %>"
+                      required
+                    >
+                  </div>
+                <% }); %>
+              </div>
+            <% } else { %>
+              <div class="mb-3" style="max-width:240px">
+                <label class="form-label form-label-sm mb-1">Pris (kr)</label>
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  class="form-control form-control-sm"
+                  name="price"
+                  value="<%= product.price %>"
+                  required
+                >
+              </div>
+            <% } %>
+
+            <button type="submit" class="btn btn-sm btn-dark">Spara alla priser</button>
+          </form>
+        <% }); %>
       </div>
     </div>
   </div>
