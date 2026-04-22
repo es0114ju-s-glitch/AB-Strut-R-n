@@ -127,6 +127,7 @@ function readProductsRaw() {
 
 function writeProductsRaw(products) {
   fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2), 'utf8');
+  clearCache();
 }
 
 function normalizeProduct(product) {
@@ -254,6 +255,60 @@ function updateProductPrice(productId, pricingData) {
   return true;
 }
 
+function addProduct(newProduct) {
+  const products = readProductsRaw();
+  products.push(newProduct);
+  writeProductsRaw(products);
+  return true;
+}
+
+function updateProductStock(productId, stockData) {
+  const products = readProductsRaw();
+  const product = products.find(p => p.id == productId);
+
+  if (!product) {
+    return false;
+  }
+
+  if (product.category === 'Strutar') {
+    product.stockPerSize = { ...stockData.stockPerSize };
+  } else {
+    product.stock = Number(stockData.stock);
+  }
+
+  writeProductsRaw(products);
+  return true;
+}
+
+function toggleProductStock(productId) {
+  const products = readProductsRaw();
+  const product = products.find(p => p.id == productId);
+
+  if (!product) {
+    return false;
+  }
+
+  if (product.category === 'Strutar' && product.stockPerSize) {
+    const currentTotal = Object.values(product.stockPerSize).reduce(
+      (sum, value) => sum + Number(value || 0),
+      0
+    );
+
+    const newValue = currentTotal > 0 ? 0 : 10;
+    const nextStockPerSize = {};
+    for (const sizeOption of product.availableSizes || Object.keys(product.stockPerSize)) {
+      nextStockPerSize[sizeOption] = newValue;
+    }
+    product.stockPerSize = nextStockPerSize;
+  } else {
+    const currentStock = Number(product.stock || 0);
+    product.stock = currentStock > 0 ? 0 : 10;
+  }
+
+  writeProductsRaw(products);
+  return true;
+}
+
 // Export these functions so other files (controllers) can use them.
 // This is how Node.js modules share functionality.
 module.exports = {
@@ -262,7 +317,10 @@ module.exports = {
   getProductsByCategory,
   getFeaturedProducts,
   reduceStockForOrderItems,
-  updateProductPrice
+  updateProductPrice,
+  addProduct,
+  updateProductStock,
+  toggleProductStock
   ,search
   ,clearCache
 };

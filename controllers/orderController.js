@@ -14,6 +14,24 @@ const productModel = require('../models/productModel');
 // Version 2 should use bcrypt password hashing and store
 // admin credentials securely in a database.
 const ADMIN_PASSWORD = 'strutraan2024';
+const STRUT_SIZES = [
+  '45mm', '52mm', '57mm', '60mm',
+  '65mm', '70mm', '75mm', '80mm',
+  '85mm', '90mm', '95mm', '100mm',
+  '105mm', '110mm', '115mm', '120mm'
+];
+
+function getSuccessMessage(successCode) {
+  if (successCode === 'product-added') return 'Produkten har lagts till!';
+  if (successCode === 'stock-updated') return 'Lagret har uppdaterats!';
+  return null;
+}
+
+function parseNonNegativeNumber(value) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < 0) return null;
+  return parsed;
+}
 
 function requireAdmin(req, res, next) {
   if (req.session && req.session.isAdmin === true) {
@@ -102,14 +120,99 @@ function showAdmin(req, res) {
   // Status options for the dropdown — maps to badge colours in the views
   const statusOptions = ['Mottagen', 'Behandlas', 'Skickad', 'Levererad'];
   const allProducts = productModel.getAllProducts();
+  const successMessage = getSuccessMessage(req.query.success);
 
   res.render('admin', {
     title: 'Admin – AB Strut & Rån',
     orders: allOrders,
     statusOptions: statusOptions,
     products: allProducts,
+    successMessage,
     cartCount: 0 // Admin page doesn't need cart count
   });
+}
+
+function showNewProductForm(req, res) {
+  res.render('admin-product-new', {
+    title: 'Lägg till produkt – Admin',
+    strutSizes: STRUT_SIZES,
+    cartCount: 0
+  });
+}
+
+function createNewProduct(req, res) {
+  const {
+    name,
+    category,
+    description,
+    price,
+    stock,
+    image,
+    pricePerSize,
+    stockPerSize
+  } = req.body;
+
+  const trimmedName = (name || '').toString().trim();
+  const trimmedCategory = (category || '').toString().trim();
+  const trimmedDescription = (description || '').toString().trim();
+  const trimmedImage = (image || '').toString().trim();
+
+  const validCategories = ['Strutar', 'Rån', 'Bägare', 'Glassmaskiner'];
+  if (!trimmedName || !validCategories.includes(trimmedCategory) || !trimmedDescription) {
+    return res.redirect('/admin/products/new');
+  }
+
+  const productId = Date.now();
+  const baseProduct = {
+    id: productId,
+    name: trimmedName,
+    category: trimmedCategory,
+    description: trimmedDescription,
+    image: trimmedImage || '/images/placeholder.png'
+  };
+
+  if (trimmedCategory === 'Strutar') {
+    const nextPricePerSize = {};
+    const nextStockPerSize = {};
+
+    for (const sizeOption of STRUT_SIZES) {
+      const parsedPrice = parseNonNegativeNumber(pricePerSize && pricePerSize[sizeOption]);
+      const parsedStock = parseNonNegativeNumber(stockPerSize && stockPerSize[sizeOption]);
+
+      if (parsedPrice === null || parsedStock === null) {
+        return res.redirect('/admin/products/new');
+      }
+
+      nextPricePerSize[sizeOption] = parsedPrice;
+      nextStockPerSize[sizeOption] = parsedStock;
+    }
+
+    // Admin can add new products directly — no server restart needed, products.json is updated in real time
+    productModel.addProduct({
+      ...baseProduct,
+      pricePerSize: nextPricePerSize,
+      stockPerSize: nextStockPerSize,
+      availableSizes: STRUT_SIZES
+    });
+
+    return res.redirect('/admin?success=product-added');
+  }
+
+  const parsedPrice = parseNonNegativeNumber(price);
+  const parsedStock = parseNonNegativeNumber(stock);
+
+  if (parsedPrice === null || parsedStock === null) {
+    return res.redirect('/admin/products/new');
+  }
+
+  // Admin can add new products directly — no server restart needed, products.json is updated in real time
+  productModel.addProduct({
+    ...baseProduct,
+    price: parsedPrice,
+    stock: parsedStock
+  });
+
+  res.redirect('/admin?success=product-added');
 }
 
 // -----------------------------------------------------------------------------
@@ -168,11 +271,62 @@ function updatePrice(req, res) {
   res.redirect('/admin');
 }
 
+function updateStock(req, res) {
+  const { productId, stock, stockPerSize } = req.body;
+  const product = productModel.getProductById(productId);
+
+  if (!product) {
+    return res.redirect('/admin');
+  }
+
+  if (product.category === 'Strutar') {
+    const submittedStockPerSize = stockPerSize || {};
+    const updatedStockPerSize = {};
+
+    for (const sizeOption of product.availableSizes || STRUT_SIZES) {
+      const parsed = parseNonNegativeNumber(submittedStockPerSize[sizeOption]);
+      if (parsed === null) {
+        return res.redirect('/admin');
+      }
+      updatedStockPerSize[sizeOption] = parsed;
+    }
+
+    // Real-time stock update — solves the case problem where stock levels were never current, forcing customers to call
+    productModel.updateProductStock(productId, { stockPerSize: updatedStockPerSize });
+    return res.redirect('/admin?success=stock-updated');
+  }
+
+  const parsedStock = parseNonNegativeNumber(stock);
+  if (parsedStock === null) {
+    return res.redirect('/admin');
+  }
+
+  // Real-time stock update — solves the case problem where stock levels were never current, forcing customers to call
+  productModel.updateProductStock(productId, { stock: parsedStock });
+  res.redirect('/admin?success=stock-updated');
+}
+
+function toggleStock(req, res) {
+  const { productId } = req.body;
+
+  if (!productId) {
+    return res.redirect('/admin');
+  }
+
+  // Quick toggle for when a product runs out unexpectedly — staff can update from their phone
+  productModel.toggleProductStock(productId);
+  res.redirect('/admin?success=stock-updated');
+}
+
 module.exports = {
   showOrders,
   showAdmin,
   updateStatus,
   updatePrice,
+  updateStock,
+  toggleStock,
+  showNewProductForm,
+  createNewProduct,
   requireAdmin,
   showAdminLogin,
   adminLogin,
