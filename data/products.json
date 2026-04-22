@@ -69,7 +69,7 @@
       "120mm": 0
     },
     "description": "Premiumstrut med chokladkantad topp. Ger ett exklusivt utseende och ett litet extra knaster. Populär på strandkiosker och sommarcaféer. Levereras i förpackningar om 50 st.",
-    "image": "/images/chocolate_waffle_2.png",
+    "image": "/images/chocolate_waffle.png",
     "availableSizes": [
       "45mm",
       "52mm",
@@ -97,7 +97,7 @@
     "price": 75,
     "stock": 180,
     "description": "Det klassiska rånet — frasigt, neutralt och professionellt. Passar perfekt till standardglasstationer. Levereras i förpackningar om 50 st.",
-    "image": "/images/ran-klassisk.jpg",
+    "image": "/images/wafer.png",
     "sizes": [
       "Tvåkulors",
       "Trekulors",
@@ -117,7 +117,7 @@
     "price": 95,
     "stock": 0,
     "description": "Karnevalsrånet – special med plats för sylt och grädde. Det här rånet har en extra bred öppning och djupare ficka, perfekt för kiosker som serverar festliga kombinationer med hallonsylt och vispgrädde. Säsongsvara.",
-    "image": "/images/ran-karneval.jpg",
+    "image": "/images/wafer.png",
     "sizes": [
       "Trekulors",
       "Fyrkulors"
@@ -135,7 +135,7 @@
     "price": 65,
     "stock": 320,
     "description": "Enkel och elegant waferrulle, populär på strandkiosker som vill hålla det klassiskt. Neutral smak, perfekt krispighet. Levereras i förpackningar om 100 st.",
-    "image": "/images/ran-rulle.jpg",
+    "image": "/images/wafer_roll.png",
     "sizes": [
       "Tvåkulors",
       "Trekulors"
@@ -153,7 +153,7 @@
     "price": 35,
     "stock": 500,
     "description": "Liten pappbägare för barnportioner eller provsmakning. Belagd med mattsvart ytskikt och diskret AB Strut & Rån-logotyp. Levereras i förpackningar om 200 st.",
-    "image": "/images/bagare-liten.jpg"
+    "image": "/images/ice_cream_cup.png"
   },
   {
     "id": 7,
@@ -163,7 +163,7 @@
     "price": 42,
     "stock": 8,
     "description": "Mellanstor bägare för standardportioner mjukglass. Stabil och tålig – håller formen även med toppings och sirap. Levereras i förpackningar om 200 st.",
-    "image": "/images/bagare-mellan.jpg"
+    "image": "/images/ice_cream_cup.png"
   },
   {
     "id": 8,
@@ -173,7 +173,7 @@
     "price": 55,
     "stock": 150,
     "description": "Stor festbägare för extra generösa portioner med utrymme för toppings, sprinkles och sirap. Perfekt för sommarfester och evenemang. Levereras i förpackningar om 100 st.",
-    "image": "/images/bagare-xl.jpg"
+    "image": "/images/ice_cream_cup.png"
   },
   {
     "id": 9,
@@ -183,7 +183,7 @@
     "price": 28900,
     "stock": 3,
     "description": "Pålitlig och tystgående mjukglassmaskin lämplig för kiosker och sommarcaféer med medelstort flöde. Kyler snabbt, enkel att rengöra och underhålla. Kapacitet: ca 180 portioner/timme. Inkl. 2 år garanti och installation.",
-    "image": "/images/maskin-x200.jpg"
+    "image": "/images/ice_cream_machine.png"
   },
   {
     "id": 10,
@@ -193,7 +193,7 @@
     "price": 47500,
     "stock": 1,
     "description": "Professionell maskin för platser med högt flöde — strandpromenader, nöjesparker, festivaler. Dubbel cylinder, självpastöriserande, pekskärm. Kapacitet: upp till 400 portioner/timme. Inkl. 3 år garanti, installation och utbildning.",
-    "image": "/images/maskin-x500.jpg"
+    "image": "/images/ice_cream_machine.png"
   },
   {
     "id": 11,
@@ -203,7 +203,7 @@
     "price": 349,
     "stock": 45,
     "description": "Professionellt rengöringsmedel speciellt formulerat för mjukglasskylare och rörledningar. Bryter ner mjölkrester och förhindrar bakterietillväxt. Godkänt för livsmedelskontakt. Räcker till ca 60 rengöringscykler.",
-    "image": "/images/rengoring.jpg"
+    "image": "/images/cleaning_product.png"
   },
   {
     "id": 12,
@@ -213,6 +213,6 @@
     "price": 199,
     "stock": 22,
     "description": "Komplett O-ringssats som passar de flesta märken av mjukglasskylare. Innehåller 24 ringar i 6 vanliga storlekar. Byt dem regelbundet för att undvika läckage och säkerställa hygien.",
-    "image": "/images/oring-kit.jpg"
+    "image": "/images/o_ring.png"
   }
 ]
