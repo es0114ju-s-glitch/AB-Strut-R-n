@@ -89,15 +89,37 @@ function updateStatus(req, res) {
 }
 
 function updatePrice(req, res) {
-  const { productId, price } = req.body;
+  const { productId, price, pricePerSize } = req.body;
+  const product = productModel.getProductById(productId);
+
+  if (!product) {
+    return res.redirect('/admin');
+  }
+
+  // Solves the case problem: prices on the old site were never updated, forcing staff to call customers to correct them
+  if (product.category === 'Strutar') {
+    const submittedPricePerSize = pricePerSize || {};
+    const updatedPricePerSize = {};
+
+    for (const sizeOption of product.availableSizes || []) {
+      const parsed = Number(submittedPricePerSize[sizeOption]);
+      if (!Number.isFinite(parsed) || parsed < 0) {
+        return res.redirect('/admin');
+      }
+      updatedPricePerSize[sizeOption] = parsed;
+    }
+
+    productModel.updateProductPrice(productId, { pricePerSize: updatedPricePerSize });
+    return res.redirect('/admin');
+  }
+
   const parsedPrice = Number(price);
 
   if (!Number.isFinite(parsedPrice) || parsedPrice < 0) {
     return res.redirect('/admin');
   }
 
-  // Solves the case problem: prices on the old site were never updated, forcing staff to call customers to correct them
-  productModel.updateProductPrice(productId, parsedPrice);
+  productModel.updateProductPrice(productId, { price: parsedPrice });
   res.redirect('/admin');
 }
 
