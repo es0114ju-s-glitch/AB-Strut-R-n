@@ -117,7 +117,7 @@ function search(query, options = {}) {
     return a.product.name.localeCompare(b.product.name);
   });
 
-  return results.slice(0, limit).map(r => r.product);
+  return results.slice(0, limit).map(r => normalizeProduct(r.product));
 }
 
 function readProductsRaw() {
@@ -139,8 +139,11 @@ function normalizeProduct(product) {
     // Each size has its own price because larger cones use more material — pricePerSize replaces the flat price
     const sizePrices = product.pricePerSize ? Object.values(product.pricePerSize) : [];
     const fallbackPrice = Number(product.price || 0);
-    const minSizePrice = sizePrices.length > 0
-      ? Math.min(...sizePrices.map(value => Number(value || 0)))
+    const validSizePrices = sizePrices
+      .map(value => Number(value))
+      .filter(value => Number.isFinite(value) && value > 0);
+    const minSizePrice = validSizePrices.length > 0
+      ? Math.min(...validSizePrices)
       : fallbackPrice;
 
     return {

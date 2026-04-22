@@ -10,6 +10,51 @@
 const orderModel = require('../models/orderModel');
 const productModel = require('../models/productModel');
 
+// Version 1: hardcoded password for demonstration purposes.
+// Version 2 should use bcrypt password hashing and store
+// admin credentials securely in a database.
+const ADMIN_PASSWORD = 'strutraan2024';
+
+function requireAdmin(req, res, next) {
+  if (req.session && req.session.isAdmin === true) {
+    return next();
+  }
+
+  return res.redirect('/admin/login');
+}
+
+function showAdminLogin(req, res) {
+  res.render('admin-login', {
+    title: 'Admin login – AB Strut & Rån',
+    errorMessage: null,
+    cartCount: req.session.cart ? req.session.cart.length : 0
+  });
+}
+
+function adminLogin(req, res) {
+  const password = (req.body.password || '').toString().trim();
+
+  if (password !== ADMIN_PASSWORD) {
+    return res.status(401).render('admin-login', {
+      title: 'Admin login – AB Strut & Rån',
+      errorMessage: 'Fel lösenord, försök igen',
+      cartCount: req.session.cart ? req.session.cart.length : 0
+    });
+  }
+
+  req.session.isAdmin = true;
+  req.session.save(() => {
+    res.redirect('/admin');
+  });
+}
+
+function adminLogout(req, res) {
+  req.session.isAdmin = false;
+  req.session.save(() => {
+    res.redirect('/admin/login');
+  });
+}
+
 // -----------------------------------------------------------------------------
 // showOrders(req, res)
 // GET /orders?customer=KUNDNUMMER — order history for a specific customer.
@@ -123,4 +168,13 @@ function updatePrice(req, res) {
   res.redirect('/admin');
 }
 
-module.exports = { showOrders, showAdmin, updateStatus, updatePrice };
+module.exports = {
+  showOrders,
+  showAdmin,
+  updateStatus,
+  updatePrice,
+  requireAdmin,
+  showAdminLogin,
+  adminLogin,
+  adminLogout
+};

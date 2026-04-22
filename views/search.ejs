@@ -16,7 +16,14 @@
             <div class="card-body d-flex flex-column">
               <h5 class="card-title"><a href="/products/<%= p.id %>"><%= p.name %></a></h5>
               <p class="card-text text-muted mb-2"><%= p.category %></p>
-              <p class="mt-auto"><strong><%= p.price %> kr</strong></p>
+              <p><strong><%= Number(p.price || 0).toLocaleString('sv-SE') %> kr</strong></p>
+              <div class="mt-auto">
+                <% if (p.stock === 0) { %>
+                  <button type="button" class="btn btn-secondary w-100" disabled>Slutsålt</button>
+                <% } else { %>
+                  <a href="/products/<%= p.id %>" class="btn btn-warning w-100 fw-semibold">Köp</a>
+                <% } %>
+              </div>
             </div>
           </div>
         </div>

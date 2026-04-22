@@ -83,9 +83,13 @@ router.post('/reorder/:orderId', cartController.reorder);
 // =============================================================================
 // ADMIN PANEL
 // =============================================================================
-router.get('/admin', orderController.showAdmin);
-router.post('/admin/update-status', orderController.updateStatus);
-router.post('/admin/update-price', orderController.updatePrice);
+router.get('/admin/login', orderController.showAdminLogin);
+router.post('/admin/login', orderController.adminLogin);
+router.get('/admin/logout', orderController.requireAdmin, orderController.adminLogout);
+
+router.get('/admin', orderController.requireAdmin, orderController.showAdmin);
+router.post('/admin/update-status', orderController.requireAdmin, orderController.updateStatus);
+router.post('/admin/update-price', orderController.requireAdmin, orderController.updatePrice);
 
 // =============================================================================
 // OFFERT ROUTES

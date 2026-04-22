@@ -46,7 +46,6 @@
       
       <!-- Each product card has data-category so JS can show/hide it -->
       <div class="col-12 col-md-6 col-lg-4 product-item" data-category="<%= product.category %>">
-        <a href="/products/<%= product.id %>" class="text-decoration-none text-reset d-block h-100">
         <div class="card h-100 border-0 shadow-sm product-card">
           
           <!-- Image placeholder -->
@@ -69,7 +68,7 @@
             </span>
 
             <h5 class="card-title" style="font-family:'Fraunces',serif">
-              <%= product.name %>
+              <a href="/products/<%= product.id %>" class="text-decoration-none text-reset"><%= product.name %></a>
             </h5>
             
             <!-- Price -->
@@ -102,12 +101,15 @@
               <% } %>
             </div>
 
-            <div class="mt-auto pt-2 small fw-semibold text-uppercase" style="letter-spacing:0.04em">
-              Visa produkt <i class="bi bi-arrow-right ms-1"></i>
+            <div class="mt-auto pt-2">
+              <% if (product.stock === 0) { %>
+                <button type="button" class="btn btn-secondary w-100" disabled>Slutsålt</button>
+              <% } else { %>
+                <a href="/products/<%= product.id %>" class="btn btn-warning w-100 fw-semibold">Köp</a>
+              <% } %>
             </div>
           </div>
         </div>
-        </a>
       </div>
 
     <% }); %>
