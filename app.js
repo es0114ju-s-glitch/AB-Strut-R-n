@@ -93,14 +93,32 @@ app.use((req, res) => {
 // =============================================================================
 // START THE SERVER
 // =============================================================================
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+
+// Make startup failures explicit instead of letting Node crash without context.
+process.on('unhandledRejection', (error) => {
+  console.error('Ohanterat löftefel:', error);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('Ohanterat undantag:', error);
+});
 
 // app.listen() starts the server and makes it listen for incoming connections.
 // The callback function runs once when the server is ready.
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log('=================================================');
   console.log('  AB Strut & Rån – Webbserver startad!');
   console.log(`  Öppna: http://localhost:${PORT}`);
   console.log(`  Admin: http://localhost:${PORT}/admin`);
   console.log('=================================================');
+});
+
+server.on('error', (error) => {
+  if (error.code === 'EADDRINUSE') {
+    console.error(`Port ${PORT} används redan. Stäng den andra processen eller sätt en annan PORT.`);
+    return;
+  }
+
+  console.error('Kunde inte starta servern:', error);
 });

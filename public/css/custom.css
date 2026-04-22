@@ -100,6 +100,9 @@ h1, h2, h3 {
   height: 200px;
   background: linear-gradient(135deg, var(--color-accent-yellow) 0%, var(--color-accent-mint) 100%);
   border-radius: var(--radius-card) var(--radius-card) 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Larger image area on the detail page */

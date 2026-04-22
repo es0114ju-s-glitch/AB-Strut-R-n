@@ -49,16 +49,22 @@
         <a href="/products/<%= product.id %>" class="text-decoration-none text-reset d-block h-100">
         <div class="card h-100 border-0 shadow-sm product-card">
           
-          <!-- Image placeholder -->
-          <div class="card-img-top product-img-placeholder d-flex align-items-center justify-content-center">
-            <% if (product.category === 'Strutar') { %>
-              <span style="font-size:3rem">🍦</span>
-            <% } else if (product.category === 'Rån') { %>
-              <span style="font-size:3rem">🥐</span>
-            <% } else if (product.category === 'Bägare') { %>
-              <span style="font-size:3rem">🥤</span>
+          <!-- Product image -->
+          <div class="card-img-top product-img-placeholder overflow-hidden">
+            <% if (product.image) { %>
+              <img src="<%= product.image %>" alt="<%= product.name %>" class="w-100 h-100" style="object-fit:cover;">
             <% } else { %>
-              <span style="font-size:3rem">⚙️</span>
+              <div class="d-flex align-items-center justify-content-center w-100 h-100">
+                <% if (product.category === 'Strutar') { %>
+                  <span style="font-size:3rem">🍦</span>
+                <% } else if (product.category === 'Rån') { %>
+                  <span style="font-size:3rem">🥐</span>
+                <% } else if (product.category === 'Bägare') { %>
+                  <span style="font-size:3rem">🥤</span>
+                <% } else { %>
+                  <span style="font-size:3rem">⚙️</span>
+                <% } %>
+              </div>
             <% } %>
           </div>
 

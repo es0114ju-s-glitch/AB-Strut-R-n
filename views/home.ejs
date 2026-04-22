@@ -79,17 +79,22 @@
           <a href="/products/<%= product.id %>" class="text-decoration-none text-reset d-block h-100">
           <div class="card h-100 shadow-sm border-0 product-card">
             
-            <!-- Product image placeholder (real images would go in /public/images) -->
-            <div class="card-img-top product-img-placeholder d-flex align-items-center justify-content-center">
-              <!-- Category emoji as placeholder -->
-              <% if (product.category === 'Strutar') { %>
-                <span style="font-size:4rem">🍦</span>
-              <% } else if (product.category === 'Rån') { %>
-                <span style="font-size:4rem">🥐</span>
-              <% } else if (product.category === 'Bägare') { %>
-                <span style="font-size:4rem">🥤</span>
+            <!-- Product image -->
+            <div class="card-img-top product-img-placeholder overflow-hidden">
+              <% if (product.image) { %>
+                <img src="<%= product.image %>" alt="<%= product.name %>" class="w-100 h-100" style="object-fit:cover;">
               <% } else { %>
-                <span style="font-size:4rem">⚙️</span>
+                <div class="d-flex align-items-center justify-content-center w-100 h-100">
+                  <% if (product.category === 'Strutar') { %>
+                    <span style="font-size:4rem">🍦</span>
+                  <% } else if (product.category === 'Rån') { %>
+                    <span style="font-size:4rem">🥐</span>
+                  <% } else if (product.category === 'Bägare') { %>
+                    <span style="font-size:4rem">🥤</span>
+                  <% } else { %>
+                    <span style="font-size:4rem">⚙️</span>
+                  <% } %>
+                </div>
               <% } %>
             </div>
 
