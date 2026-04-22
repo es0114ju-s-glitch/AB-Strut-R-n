@@ -14,15 +14,19 @@
 
     <!-- LEFT COLUMN: Product image -->
     <div class="col-12 col-md-5">
-      <div class="product-detail-img d-flex align-items-center justify-content-center rounded-3 shadow-sm">
-        <% if (product.category === 'Strutar') { %>
-          <span style="font-size:8rem">🍦</span>
-        <% } else if (product.category === 'Rån') { %>
-          <span style="font-size:8rem">🥐</span>
-        <% } else if (product.category === 'Bägare') { %>
-          <span style="font-size:8rem">🥤</span>
+      <div class="product-detail-img d-flex align-items-center justify-content-center rounded-3 shadow-sm overflow-hidden">
+        <% if (product.image) { %>
+          <img src="<%= product.image %>" alt="<%= product.name %>" class="w-100 h-100" style="object-fit:cover;">
         <% } else { %>
-          <span style="font-size:8rem">⚙️</span>
+          <% if (product.category === 'Strutar') { %>
+            <span style="font-size:8rem">🍦</span>
+          <% } else if (product.category === 'Rån') { %>
+            <span style="font-size:8rem">🥐</span>
+          <% } else if (product.category === 'Bägare') { %>
+            <span style="font-size:8rem">🥤</span>
+          <% } else { %>
+            <span style="font-size:8rem">⚙️</span>
+          <% } %>
         <% } %>
       </div>
 
