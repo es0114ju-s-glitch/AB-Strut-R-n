@@ -17,18 +17,30 @@
     <button class="btn btn-dark active filter-btn" data-category="alla">
       <i class="bi bi-grid me-1"></i> Alla produkter
     </button>
-    <button class="btn btn-outline-dark filter-btn" data-category="Strutar">
-      🍦 Strutar
-    </button>
-    <button class="btn btn-outline-dark filter-btn" data-category="Rån">
-      🥐 Rån
-    </button>
-    <button class="btn btn-outline-dark filter-btn" data-category="Bägare">
-      🥤 Bägare
-    </button>
-    <button class="btn btn-outline-dark filter-btn" data-category="Glassmaskiner">
-      ⚙️ Glassmaskiner
-    </button>
+    <% 
+      const filterCats = [
+        { name: 'Strutar', emoji: '🍦' },
+        { name: 'Rån', emoji: '🥐' },
+        { name: 'Bägare', emoji: '🥤' },
+        { name: 'Glassmaskiner', emoji: '⚙️' }
+      ];
+      filterCats.forEach(function(cat) {
+        const catProduct = products.find(function(p) { return p.category === cat.name && p.image; });
+        const catThumb = catProduct && catProduct.image
+          ? catProduct.image.replace('/images/', '/images/thumbnails/')
+          : null;
+    %>
+      <button class="btn btn-outline-dark filter-btn" data-category="<%= cat.name %>">
+        <% if (catThumb) { %>
+          <span class="filter-thumb-wrap">
+            <img src="<%= catThumb %>" alt="<%= cat.name %>" class="filter-thumb-img">
+          </span>
+        <% } else { %>
+          <span><%= cat.emoji %></span>
+        <% } %>
+        <span><%= cat.name %></span>
+      </button>
+    <% }); %>
   </div>
 
   <!-- ========================================================================
