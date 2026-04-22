@@ -23,7 +23,7 @@
       "120mm": 80
     },
     "description": "Vår mest sålda strut, perfekt för standardmjukglasstationer. Tillverkad av krispigt wafer-material med neutral smak som inte konkurrerar med glassen. Levereras i förpackningar om 100 st.",
-    "image": "/images/standard_cone.jpg",
+    "image": "/images/empty_waffle.png",
     "availableSizes": [
       "45mm",
       "52mm",
@@ -67,7 +67,7 @@
       "120mm": 0
     },
     "description": "Premiumstrut med chokladkantad topp. Ger ett exklusivt utseende och ett litet extra knaster. Populär på strandkiosker och sommarcaféer. Levereras i förpackningar om 50 st.",
-    "image": "/images/strut-choco.jpg",
+    "image": "/images/chocolate_waffle_2.png",
     "availableSizes": [
       "45mm",
       "52mm",
