@@ -1,6 +1,7 @@
 [
   {
     "id": 1,
+    "articleNumber": "ART-0001",
     "name": "Klassisk Strut – Standard",
     "category": "Strutar",
     "price": 69,
@@ -45,6 +46,7 @@
   },
   {
     "id": 2,
+    "articleNumber": "ART-0002",
     "name": "Lyxstrut – Chokladkantad",
     "category": "Strutar",
     "price": 89,
@@ -89,6 +91,7 @@
   },
   {
     "id": 3,
+    "articleNumber": "ART-0003",
     "name": "Rånet – Klassisk",
     "category": "Rån",
     "price": 75,
@@ -108,6 +111,7 @@
   },
   {
     "id": 4,
+    "articleNumber": "ART-0004",
     "name": "Karnevalsrånet",
     "category": "Rån",
     "price": 95,
@@ -125,6 +129,7 @@
   },
   {
     "id": 5,
+    "articleNumber": "ART-0005",
     "name": "Waferrulle – Enkel",
     "category": "Rån",
     "price": 65,
@@ -142,6 +147,7 @@
   },
   {
     "id": 6,
+    "articleNumber": "ART-0006",
     "name": "Glassbägare 150ml",
     "category": "Bägare",
     "price": 35,
@@ -151,6 +157,7 @@
   },
   {
     "id": 7,
+    "articleNumber": "ART-0007",
     "name": "Glassbägare 250ml",
     "category": "Bägare",
     "price": 42,
@@ -160,6 +167,7 @@
   },
   {
     "id": 8,
+    "articleNumber": "ART-0008",
     "name": "Glassbägare 400ml – XL Party",
     "category": "Bägare",
     "price": 55,
@@ -169,6 +177,7 @@
   },
   {
     "id": 9,
+    "articleNumber": "ART-0009",
     "name": "Mjukglassmaskin Model X200",
     "category": "Glassmaskiner",
     "price": 28900,
@@ -178,6 +187,7 @@
   },
   {
     "id": 10,
+    "articleNumber": "ART-0010",
     "name": "Mjukglassmaskin Model X500 Pro",
     "category": "Glassmaskiner",
     "price": 47500,
@@ -187,6 +197,7 @@
   },
   {
     "id": 11,
+    "articleNumber": "ART-0011",
     "name": "CleanPro Rengöringsmedel 5L",
     "category": "Glassmaskiner",
     "price": 349,
@@ -196,6 +207,7 @@
   },
   {
     "id": 12,
+    "articleNumber": "ART-0012",
     "name": "Reservdelar – O-ringskit Universal",
     "category": "Glassmaskiner",
     "price": 199,
