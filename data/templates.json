@@ -79,5 +79,23 @@
       }
     ],
     "createdAt": "2026-04-22T08:15:24.880Z"
+  },
+  {
+    "id": "TPL-1776854145865",
+    "name": "Standard",
+    "owner": "1",
+    "items": [
+      {
+        "productId": 6,
+        "name": "Glassbägare 150ml",
+        "category": "Bägare",
+        "size": null,
+        "angle": null,
+        "quantity": 1,
+        "unitPrice": 35,
+        "subtotal": 35
+      }
+    ],
+    "createdAt": "2026-04-22T10:35:45.865Z"
   }
 ]
