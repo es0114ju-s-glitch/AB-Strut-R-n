@@ -48,4 +48,40 @@ function showProductDetail(req, res) {
   });
 }
 
-module.exports = { showProducts, showProductDetail };
+// -----------------------------------------------------------------------------
+// showSearch(req, res)
+// GET /search?q=... — search products by name or article number
+// -----------------------------------------------------------------------------
+function showSearch(req, res) {
+  const q = req.query.q || '';
+  const results = q.trim() ? productModel.search(q, { limit: 50 }) : [];
+
+  res.render('search', {
+    title: `Sök: ${q}`,
+    query: q,
+    results: results,
+    cartCount: req.session.cart ? req.session.cart.length : 0
+  });
+}
+
+// -----------------------------------------------------------------------------
+// showSuggest(req, res)
+// GET /search/suggest?q=... — returns JSON suggestions for autocomplete
+// -----------------------------------------------------------------------------
+function showSuggest(req, res) {
+  const q = (req.query.q || '').toString();
+  if (!q.trim()) return res.json([]);
+
+  const results = productModel.search(q, { limit: 10 });
+
+  const suggestions = results.map(p => ({
+    id: p.id,
+    name: p.name,
+    articleNumber: p.articleNumber || '',
+    price: p.price || 0
+  }));
+
+  res.json(suggestions);
+}
+
+module.exports = { showProducts, showProductDetail, showSearch, showSuggest };

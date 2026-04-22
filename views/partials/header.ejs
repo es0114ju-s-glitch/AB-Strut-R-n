@@ -70,6 +70,13 @@
             <a class="nav-link" href="/login">Logga in</a>
           </li>
         <% } %>
+        <li class="nav-item d-flex align-items-center me-3 position-relative">
+          <form class="d-flex" role="search" action="/search" method="GET" id="searchForm">
+            <input id="searchInput" class="form-control form-control-sm me-2" type="search" placeholder="Sök produkter eller artikelnummer" aria-label="Sök" name="q" autocomplete="off">
+            <button class="btn btn-sm btn-outline-light" type="submit"><i class="bi bi-search"></i></button>
+          </form>
+          <div id="searchSuggestions" class="list-group position-absolute" style="z-index:2000; top:38px; left:0; right:0; display:none; max-height:300px; overflow:auto;"></div>
+        </li>
         <li class="nav-item">
           <!-- Cart link with item count badge -->
           <!-- cartCount is passed from every controller via res.render() -->
@@ -90,3 +97,42 @@
 
 <!-- Main content starts here — pages wrap their content in this tag -->
 <main class="py-4">
+<script>
+  (function(){
+    const input = document.getElementById('searchInput');
+    const suggestions = document.getElementById('searchSuggestions');
+    if (!input || !suggestions) return;
+
+    let timer = null;
+    function clearSuggestions(){ suggestions.innerHTML=''; suggestions.style.display='none'; }
+
+    input.addEventListener('blur', () => setTimeout(clearSuggestions, 150));
+    input.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape') clearSuggestions();
+    });
+
+    input.addEventListener('input', function(){
+      const q = this.value.trim();
+      if (timer) clearTimeout(timer);
+      if (!q) { clearSuggestions(); return; }
+      timer = setTimeout(() => {
+        fetch('/search/suggest?q=' + encodeURIComponent(q))
+          .then(r => r.json())
+          .then(items => {
+            suggestions.innerHTML = '';
+            if (!items || items.length === 0) { suggestions.style.display='none'; return; }
+            for (const it of items) {
+              const el = document.createElement('a');
+              el.href = '/products/' + encodeURIComponent(it.id) + '?q=' + encodeURIComponent(q);
+              el.className = 'list-group-item list-group-item-action';
+              el.innerHTML = `<div class="d-flex w-100 justify-content-between"><div><strong>${escapeHtml(it.name)}</strong><br><small class="text-muted">${escapeHtml(it.articleNumber || '')}</small></div><small class="text-muted">${it.price} kr</small></div>`;
+              suggestions.appendChild(el);
+            }
+            suggestions.style.display = 'block';
+          }).catch(()=>{ clearSuggestions(); });
+      }, 180);
+    });
+
+    function escapeHtml(s){ if(!s) return ''; return s.replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[c]); }
+  })();
+</script>
