@@ -149,7 +149,7 @@
     "name": "Karnevalsrånet",
     "category": "Rån",
     "price": 95,
-    "stock": 0,
+    "stock": 20,
     "description": "Karnevalsrånet – special med plats för sylt och grädde. Det här rånet har en extra bred öppning och djupare ficka, perfekt för kiosker som serverar festliga kombinationer med hallonsylt och vispgrädde. Säsongsvara.",
     "image": "/images/ran-karneval.jpg",
     "sizes": [

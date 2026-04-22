@@ -86,10 +86,14 @@ router.post('/reorder/:orderId', cartController.reorder);
 router.get('/admin/login', orderController.showAdminLogin);
 router.post('/admin/login', orderController.adminLogin);
 router.get('/admin/logout', orderController.requireAdmin, orderController.adminLogout);
+router.get('/admin/products/new', orderController.requireAdmin, orderController.showNewProductForm);
+router.post('/admin/products/new', orderController.requireAdmin, orderController.createNewProduct);
 
 router.get('/admin', orderController.requireAdmin, orderController.showAdmin);
 router.post('/admin/update-status', orderController.requireAdmin, orderController.updateStatus);
 router.post('/admin/update-price', orderController.requireAdmin, orderController.updatePrice);
+router.post('/admin/update-stock', orderController.requireAdmin, orderController.updateStock);
+router.post('/admin/toggle-stock', orderController.requireAdmin, orderController.toggleStock);
 
 // =============================================================================
 // OFFERT ROUTES

@@ -1,0 +1,105 @@
+<%- include('partials/header') %>
+
+<div class="container" style="max-width:980px">
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 fw-bold mb-0">Lägg till ny produkt</h1>
+    <a href="/admin" class="btn btn-outline-secondary btn-sm">Tillbaka till admin</a>
+  </div>
+
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+      <form action="/admin/products/new" method="POST" id="new-product-form">
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <label for="name" class="form-label">Produktnamn</label>
+            <input id="name" name="name" type="text" class="form-control" required>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="category" class="form-label">Kategori</label>
+            <select id="category" name="category" class="form-select" required>
+              <option value="">-- Välj kategori --</option>
+              <option value="Strutar">Strutar</option>
+              <option value="Rån">Rån</option>
+              <option value="Bägare">Bägare</option>
+              <option value="Glassmaskiner">Glassmaskiner</option>
+            </select>
+          </div>
+
+          <div class="col-12">
+            <label for="description" class="form-label">Beskrivning</label>
+            <textarea id="description" name="description" class="form-control" rows="4" required></textarea>
+          </div>
+
+          <div class="col-12 col-md-6" id="single-price-wrap">
+            <label for="price" class="form-label">Pris (SEK)</label>
+            <input id="price" name="price" type="number" min="0" step="1" class="form-control" value="0">
+          </div>
+
+          <div class="col-12 col-md-6" id="single-stock-wrap">
+            <label for="stock" class="form-label">Lagersaldo</label>
+            <input id="stock" name="stock" type="number" min="0" step="1" class="form-control" value="0">
+          </div>
+
+          <div class="col-12 d-none" id="strut-fields-wrap">
+            <div class="border rounded-3 p-3 bg-light">
+              <h2 class="h5 fw-bold mb-3">Strutstorlekar: pris + lager</h2>
+              <div class="row g-2">
+                <% strutSizes.forEach(function(sizeOption) { %>
+                  <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="border rounded-2 p-2 bg-white h-100">
+                      <div class="fw-semibold small mb-2"><%= sizeOption %></div>
+                      <label class="form-label form-label-sm mb-1">Pris</label>
+                      <input type="number" min="0" step="1" class="form-control form-control-sm mb-2" name="pricePerSize[<%= sizeOption %>]" value="0">
+                      <label class="form-label form-label-sm mb-1">Lager</label>
+                      <input type="number" min="0" step="1" class="form-control form-control-sm" name="stockPerSize[<%= sizeOption %>]" value="0">
+                    </div>
+                  </div>
+                <% }); %>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <label for="image" class="form-label">Bild-URL (valfri)</label>
+            <input id="image" name="image" type="text" class="form-control" placeholder="/images/min-bild.png">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-dark mt-4">Lägg till produkt</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const categorySelect = document.getElementById('category');
+    const singlePriceWrap = document.getElementById('single-price-wrap');
+    const singleStockWrap = document.getElementById('single-stock-wrap');
+    const strutFieldsWrap = document.getElementById('strut-fields-wrap');
+    const singlePriceInput = document.getElementById('price');
+    const singleStockInput = document.getElementById('stock');
+    const strutInputs = strutFieldsWrap.querySelectorAll('input');
+
+    function updateFormByCategory() {
+      const isStrut = categorySelect.value === 'Strutar';
+
+      singlePriceWrap.classList.toggle('d-none', isStrut);
+      singleStockWrap.classList.toggle('d-none', isStrut);
+      strutFieldsWrap.classList.toggle('d-none', !isStrut);
+
+      singlePriceInput.required = !isStrut;
+      singleStockInput.required = !isStrut;
+
+      strutInputs.forEach(function(input) {
+        input.required = isStrut;
+      });
+    }
+
+    categorySelect.addEventListener('change', updateFormByCategory);
+    updateFormByCategory();
+  })();
+</script>
+
+<%- include('partials/footer') %>
