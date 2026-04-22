@@ -19,6 +19,107 @@ const path = require('path'); // Node.js built-in: handles file paths safely
 // We go up one level (..) then into /data/products.json
 const PRODUCTS_FILE = path.join(__dirname, '..', 'data', 'products.json');
 
+// In-memory cache and simple search index to avoid reading/parsing file on
+// every request. The dataset is small, but this makes searches fast.
+let _productsCache = null;
+
+function _loadProducts() {
+  if (_productsCache) return _productsCache;
+  const contents = fs.readFileSync(PRODUCTS_FILE, 'utf8');
+  const arr = JSON.parse(contents);
+
+  // Precompute normalized fields for faster search
+  _productsCache = arr.map(p => {
+    const normName = (p.name || '').toString().toLowerCase();
+    const normDesc = (p.description || '').toString().toLowerCase();
+    const idStr = (p.id || '').toString();
+    const article = (p.articleNumber || '').toString().toLowerCase();
+    const combined = `${normName} ${normDesc} ${idStr} ${article}`;
+    const normalize = s => s.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+    return Object.assign({}, p, {
+      _searchText: normalize(combined),
+      _normName: normalize(normName),
+      _idStr: idStr,
+      _article: normalize(article)
+    });
+  });
+
+  return _productsCache;
+}
+
+// Clear cache (useful during development)
+function clearCache() {
+  _productsCache = null;
+}
+
+// -----------------------------------------------------------------------------
+// search(query, options)
+// Fast, scored search over product name and id. Returns up to options.limit
+// results. Scoring is heuristic: exact id match > name startsWith > name contains
+// > token matches. Diacritics are ignored and search is case-insensitive.
+// -----------------------------------------------------------------------------
+function search(query, options = {}) {
+  if (!query || !query.toString().trim()) return [];
+  const limit = options.limit || 30;
+  const q = query.toString().toLowerCase();
+
+  // normalize diacritics
+  const qNorm = q.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+  const tokens = qNorm.split(/\s+/).filter(Boolean);
+
+  const products = _loadProducts();
+
+  const results = [];
+
+  for (const p of products) {
+    let score = 0;
+
+
+    // exact id (numeric) match
+    if (p._idStr === qNorm) {
+      score += 1000;
+    }
+
+    // exact article number match (ART-0001 or sku)
+    if (p._article && p._article === qNorm) {
+      score += 900;
+    }
+
+    // article startsWith
+    if (p._article && p._article.startsWith(qNorm)) score += 400;
+
+  // name starts with query
+  if (p._normName.startsWith(qNorm)) score += 200;
+
+    // name contains query
+    if (p._normName.includes(qNorm)) score += 100;
+
+    // description or other text contains query
+    if (p._searchText && p._searchText.includes(qNorm)) score += 30;
+
+    // token matching - reward products that match more tokens
+    let tokenMatches = 0;
+    for (const t of tokens) {
+      if (p._searchText.includes(t)) tokenMatches++;
+    }
+    score += tokenMatches * 25;
+
+    // small boost for in-stock items
+    const inStock = (p.stock && p.stock > 0) || (p.stockPerSize && Object.values(p.stockPerSize).some(n => n > 0));
+    if (inStock) score += 5;
+
+    if (score > 0) results.push({ product: p, score });
+  }
+
+  // sort by score desc then by name
+  results.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    return a.product.name.localeCompare(b.product.name);
+  });
+
+  return results.slice(0, limit).map(r => r.product);
+}
+
 function readProductsRaw() {
   const fileContents = fs.readFileSync(PRODUCTS_FILE, 'utf8');
   return JSON.parse(fileContents);
@@ -159,4 +260,6 @@ module.exports = {
   getFeaturedProducts,
   reduceStockForOrderItems,
   updateProductPrice
+  ,search
+  ,clearCache
 };

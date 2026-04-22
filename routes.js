@@ -40,6 +40,9 @@ router.get('/products', productController.showProducts);
 
 // Show one product — :id is a URL parameter (e.g. /products/3 → id = "3")
 router.get('/products/:id', productController.showProductDetail);
+// Search
+router.get('/search', productController.showSearch);
+router.get('/search/suggest', productController.showSuggest);
 
 // =============================================================================
 // CART ROUTES
