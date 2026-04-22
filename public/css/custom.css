@@ -153,6 +153,24 @@ h1, h2, h3 {
   border-radius: var(--radius-card) !important;
 }
 
+.cat-thumb-wrap {
+  width: 100%;
+  height: 90px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-accent-yellow) 0%, var(--color-accent-mint) 100%);
+}
+
+.cat-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .cat-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 20px rgba(0,0,0,0.1) !important;
