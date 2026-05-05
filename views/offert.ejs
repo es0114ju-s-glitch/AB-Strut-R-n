@@ -17,7 +17,7 @@
         <div class="mb-3">
           <span class="badge bg-light text-dark border">Produkt</span>
           <div class="fw-semibold mt-2"><%= product.name %></div>
-          <div class="text-muted small">Kategori: <%= product.category %></div>
+          <div class="text-muted small">Kategori: <%= product.categoryLabel || product.category %></div>
         </div>
       <% } %>
 

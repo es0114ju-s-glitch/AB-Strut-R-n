@@ -55,7 +55,7 @@ function addToCart(req, res) {
     return res.redirect('/products');
   }
 
-  if (product.category === 'Glassmaskiner') {
+  if (product.requiresOffer) {
     return res.redirect('/offert?productId=' + product.id);
   }
 

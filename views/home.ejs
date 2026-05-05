@@ -99,7 +99,7 @@
             </div>
 
             <div class="card-body d-flex flex-column">
-              <span class="badge bg-light text-dark mb-2 align-self-start"><%= product.category %></span>
+              <span class="badge bg-light text-dark mb-2 align-self-start"><%= product.categoryLabel || product.category %></span>
               <h5 class="card-title" style="font-family:'Fraunces',serif"><%= product.name %></h5>
               <p class="text-muted small flex-grow-1"><%= product.description.substring(0, 80) %>…</p>
               <div class="d-flex align-items-center justify-content-between mt-3">
@@ -122,28 +122,28 @@
     <div class="row g-3">
       <% 
         const cats = [
-          { name: 'Strutar', emoji: '🍦', desc: '16 storlekar för alla maskiner' },
-          { name: 'Rån', emoji: '🥐', desc: 'Waferrånar i olika vinklar' },
-          { name: 'Bägare', emoji: '🥤', desc: '150ml–400ml pappersbägare' },
-          { name: 'Glassmaskiner', emoji: '⚙️', desc: 'Maskiner, rengöring & reservdelar' }
+          { value: 'Strutar', label: 'Strutar', emoji: '🍦', desc: '16 storlekar för alla maskiner' },
+          { value: 'Rån', label: 'Rån', emoji: '🥐', desc: 'Waferrånar i olika vinklar' },
+          { value: 'Bägare', label: 'Bägare', emoji: '🥤', desc: '150ml–400ml pappersbägare' },
+          { value: 'Glassmaskiner', label: 'Glassmaskiner och tillbehör', emoji: '⚙️', desc: 'Maskiner, rengöring & reservdelar' }
         ];
         cats.forEach(function(cat) {
-          const catProduct = featured.find(function(p) { return p.category === cat.name; });
+          const catProduct = featured.find(function(p) { return p.category === cat.value; });
           const catThumb = catProduct && catProduct.image
             ? catProduct.image.replace('/images/', '/images/thumbnails/')
             : null;
       %>
         <div class="col-6 col-md-3">
-          <a href="/products?category=<%= cat.name %>" class="text-decoration-none">
+          <a href="/products?category=<%= cat.value %>" class="text-decoration-none">
             <div class="card text-center h-100 border-0 shadow-sm cat-card p-3">
               <div class="cat-thumb-wrap mb-2">
                 <% if (catThumb) { %>
-                  <img src="<%= catThumb %>" alt="<%= cat.name %>" class="cat-thumb-img">
+                  <img src="<%= catThumb %>" alt="<%= cat.label %>" class="cat-thumb-img">
                 <% } else { %>
                   <div class="fs-2"><%= cat.emoji %></div>
                 <% } %>
               </div>
-              <div class="fw-semibold"><%= cat.name %></div>
+              <div class="fw-semibold"><%= cat.label %></div>
               <div class="text-muted small"><%= cat.desc %></div>
             </div>
           </a>

@@ -19,26 +19,26 @@
     </button>
     <% 
       const filterCats = [
-        { name: 'Strutar', emoji: '🍦' },
-        { name: 'Rån', emoji: '🥐' },
-        { name: 'Bägare', emoji: '🥤' },
-        { name: 'Glassmaskiner', emoji: '⚙️' }
+        { value: 'Strutar', label: 'Strutar', emoji: '🍦' },
+        { value: 'Rån', label: 'Rån', emoji: '🥐' },
+        { value: 'Bägare', label: 'Bägare', emoji: '🥤' },
+        { value: 'Glassmaskiner', label: 'Glassmaskiner och tillbehör', emoji: '⚙️' }
       ];
       filterCats.forEach(function(cat) {
-        const catProduct = products.find(function(p) { return p.category === cat.name && p.image; });
+        const catProduct = products.find(function(p) { return p.category === cat.value && p.image; });
         const catThumb = catProduct && catProduct.image
           ? catProduct.image.replace('/images/', '/images/thumbnails/')
           : null;
     %>
-      <button class="btn btn-outline-dark filter-btn" data-category="<%= cat.name %>">
+      <button class="btn btn-outline-dark filter-btn" data-category="<%= cat.value %>">
         <% if (catThumb) { %>
           <span class="filter-thumb-wrap">
-            <img src="<%= catThumb %>" alt="<%= cat.name %>" class="filter-thumb-img">
+            <img src="<%= catThumb %>" alt="<%= cat.label %>" class="filter-thumb-img">
           </span>
         <% } else { %>
           <span><%= cat.emoji %></span>
         <% } %>
-        <span><%= cat.name %></span>
+        <span><%= cat.label %></span>
       </button>
     <% }); %>
   </div>
@@ -58,6 +58,7 @@
       
       <!-- Each product card has data-category so JS can show/hide it -->
       <div class="col-12 col-md-6 col-lg-4 product-item" data-category="<%= product.category %>">
+        <a href="/products/<%= product.id %>" class="text-decoration-none text-reset d-block h-100">
         <div class="card h-100 border-0 shadow-sm product-card">
           
           <!-- Product image -->
@@ -82,11 +83,11 @@
           <div class="card-body d-flex flex-column">
             <!-- Category badge -->
             <span class="badge bg-light text-dark mb-2 align-self-start border">
-              <%= product.category %>
+              <%= product.categoryLabel || product.category %>
             </span>
 
             <h5 class="card-title" style="font-family:'Fraunces',serif">
-              <a href="/products/<%= product.id %>" class="text-decoration-none text-reset"><%= product.name %></a>
+              <%= product.name %>
             </h5>
             
             <!-- Price -->
@@ -123,11 +124,12 @@
               <% if (product.stock === 0) { %>
                 <button type="button" class="btn btn-secondary w-100" disabled>Slutsålt</button>
               <% } else { %>
-                <a href="/products/<%= product.id %>" class="btn btn-warning w-100 fw-semibold">Köp</a>
+                <div class="btn btn-warning w-100 fw-semibold">Köp</div>
               <% } %>
             </div>
           </div>
         </div>
+        </a>
       </div>
 
     <% }); %>

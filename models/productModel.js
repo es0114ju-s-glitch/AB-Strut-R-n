@@ -18,6 +18,13 @@ const path = require('path'); // Node.js built-in: handles file paths safely
 // __dirname = the folder where THIS file lives (/models)
 // We go up one level (..) then into /data/products.json
 const PRODUCTS_FILE = path.join(__dirname, '..', 'data', 'products.json');
+const CATEGORY_LABELS = {
+  Glassmaskiner: 'Glassmaskiner och tillbehör'
+};
+const OFFER_REQUIRED_PRODUCT_NAMES = new Set([
+  'Mjukglassmaskin Model X200',
+  'Mjukglassmaskin Model X500 Pro'
+]);
 
 // In-memory cache and simple search index to avoid reading/parsing file on
 // every request. The dataset is small, but this makes searches fast.
@@ -50,6 +57,18 @@ function _loadProducts() {
 // Clear cache (useful during development)
 function clearCache() {
   _productsCache = null;
+}
+
+function getCategoryLabel(category) {
+  return CATEGORY_LABELS[category] || category;
+}
+
+function requiresOffer(product) {
+  if (!product) {
+    return false;
+  }
+
+  return Boolean(product.requiresOffer) || OFFER_REQUIRED_PRODUCT_NAMES.has(product.name);
 }
 
 // -----------------------------------------------------------------------------
@@ -130,16 +149,26 @@ function writeProductsRaw(products) {
   clearCache();
 }
 
+// -----------------------------------------------------------------------------
+// normalizeProduct(product)
+// Adds shared display metadata and keeps strut-specific price/stock totals in sync.
+// -----------------------------------------------------------------------------
 function normalizeProduct(product) {
-  if (product.category === 'Strutar' && product.stockPerSize) {
-    const totalStock = Object.values(product.stockPerSize).reduce(
+  const normalizedProduct = {
+    ...product,
+    categoryLabel: getCategoryLabel(product.category),
+    requiresOffer: requiresOffer(product)
+  };
+
+  if (normalizedProduct.category === 'Strutar' && normalizedProduct.stockPerSize) {
+    const totalStock = Object.values(normalizedProduct.stockPerSize).reduce(
       (sum, value) => sum + Number(value || 0),
       0
     );
 
     // Each size has its own price because larger cones use more material — pricePerSize replaces the flat price
-    const sizePrices = product.pricePerSize ? Object.values(product.pricePerSize) : [];
-    const fallbackPrice = Number(product.price || 0);
+    const sizePrices = normalizedProduct.pricePerSize ? Object.values(normalizedProduct.pricePerSize) : [];
+    const fallbackPrice = Number(normalizedProduct.price || 0);
     const validSizePrices = sizePrices
       .map(value => Number(value))
       .filter(value => Number.isFinite(value) && value > 0);
@@ -148,20 +177,15 @@ function normalizeProduct(product) {
       : fallbackPrice;
 
     return {
-      ...product,
+      ...normalizedProduct,
       price: minSizePrice,
       stock: totalStock
     };
   }
 
-  return product;
+  return normalizedProduct;
 }
 
-// -----------------------------------------------------------------------------
-// getAllProducts()
-// Returns ALL products from the JSON file as a JavaScript array.
-// No filtering, no sorting — that happens in the controller.
-// -----------------------------------------------------------------------------
 function getAllProducts() {
   return readProductsRaw().map(normalizeProduct);
 }
@@ -320,7 +344,9 @@ module.exports = {
   updateProductPrice,
   addProduct,
   updateProductStock,
-  toggleProductStock
-  ,search
-  ,clearCache
+  toggleProductStock,
+  search,
+  clearCache,
+  getCategoryLabel,
+  requiresOffer
 };

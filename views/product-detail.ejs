@@ -41,7 +41,7 @@
     <!-- RIGHT COLUMN: Product info + order form -->
     <div class="col-12 col-md-7">
       
-      <span class="badge bg-dark mb-2"><%= product.category %></span>
+      <span class="badge bg-dark mb-2"><%= product.categoryLabel || product.category %></span>
       <h1 class="fw-bold mb-2" style="font-family:'Fraunces',serif"><%= product.name %></h1>
       
       <!-- Price -->
@@ -78,10 +78,10 @@
            This form POSTs to /cart/add with product details.
            The form only shows size/angle options for relevant categories.
            ==================================================================== -->
-      <% if (product.category === 'Glassmaskiner') { %>
+      <% if (product.requiresOffer) { %>
         <div class="bg-light rounded-3 p-4 border">
           <h5 class="fw-bold mb-2">Begär offert</h5>
-          <p class="text-muted mb-3">Maskiner kräver behovsanalys, installation och planering innan köp.</p>
+          <p class="text-muted mb-3">Den här produkten beställs via offertförfrågan.</p>
           <a href="/offert?productId=<%= product.id %>" class="btn btn-primary btn-lg fw-semibold">
             <i class="bi bi-file-earmark-text me-2"></i>Begär offert
           </a>
