@@ -37,7 +37,7 @@
             <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
               <div>
                 <strong><%= product.name %></strong>
-                <div class="small text-muted"><%= product.category %></div>
+                <div class="small text-muted"><%= product.categoryLabel || product.category %></div>
               </div>
             </div>
 
@@ -91,7 +91,7 @@
             <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
               <div>
                 <strong><%= product.name %></strong>
-                <div class="small text-muted"><%= product.category %></div>
+                <div class="small text-muted"><%= product.categoryLabel || product.category %></div>
               </div>
 
               <% 

@@ -55,7 +55,7 @@ function addToCart(req, res) {
     return res.redirect('/products');
   }
 
-  if (product.category === 'Glassmaskiner') {
+  if (product.requiresOffer) {
     return res.redirect('/offert?productId=' + product.id);
   }
 
@@ -193,11 +193,13 @@ async function processCheckout(req, res) {
     message
   } = req.body;
 
+  const trimmedPhone = (phone || '').toString().trim();
+
   const normalizedData = {
     companyName: (companyName || '').trim(),
     customerNumber: (customerNumber || '').trim(),
     email: (email || '').trim(),
-    phone: (phone || '').trim(),
+    phone: trimmedPhone,
     message: (message || '').trim(),
     deliveryStreet: (deliveryStreet || '').trim(),
     deliveryZip: (deliveryZip || '').trim(),
@@ -207,6 +209,8 @@ async function processCheckout(req, res) {
     invoiceCity: (invoiceCity || '').trim(),
     sameAddress: sameAddress === 'yes'
   };
+
+  const phoneIsValid = /^\d+$/.test(trimmedPhone);
 
   // Required fields prevent incomplete orders that staff would otherwise have to follow up by phone
   const missingBaseField =
@@ -229,13 +233,15 @@ async function processCheckout(req, res) {
   const invalidInvoiceZip =
     !normalizedData.sameAddress && !/^\d{5}$/.test(normalizedData.invoiceZip);
 
-  if (missingBaseField || missingInvoiceField || invalidDeliveryZip || invalidInvoiceZip) {
+  if (missingBaseField || missingInvoiceField || invalidDeliveryZip || invalidInvoiceZip || !phoneIsValid) {
     const total = cart.reduce((sum, item) => sum + item.subtotal, 0);
     return res.status(400).render('checkout', {
       title: 'Kassa – AB Strut & Rån',
       cart: cart,
       total: total,
-      errorMessage: 'Alla obligatoriska fält måste fyllas i innan beställningen kan skickas.',
+      errorMessage: phoneIsValid
+        ? 'Alla obligatoriska fält måste fyllas i innan beställningen kan skickas.'
+        : 'Telefonnumret får bara innehålla siffror.',
       formData: normalizedData,
       cartCount: cart.length
     });

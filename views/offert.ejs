@@ -17,7 +17,7 @@
         <div class="mb-3">
           <span class="badge bg-light text-dark border">Produkt</span>
           <div class="fw-semibold mt-2"><%= product.name %></div>
-          <div class="text-muted small">Kategori: <%= product.category %></div>
+          <div class="text-muted small">Kategori: <%= product.categoryLabel || product.category %></div>
         </div>
       <% } %>
 
@@ -25,23 +25,23 @@
         <input type="hidden" name="productId" value="<%= formData.productId %>">
 
         <div class="col-12 col-md-6">
-          <label for="name" class="form-label fw-semibold">Namn</label>
+          <label for="name" class="form-label fw-semibold">Namn <span class="text-danger">*</span></label>
           <input type="text" id="name" name="name" class="form-control" value="<%= formData.name %>" required>
         </div>
 
         <div class="col-12 col-md-6">
-          <label for="company" class="form-label fw-semibold">Företag</label>
+          <label for="company" class="form-label fw-semibold">Företag <span class="text-danger">*</span></label>
           <input type="text" id="company" name="company" class="form-control" value="<%= formData.company %>" required>
         </div>
 
         <div class="col-12 col-md-6">
-          <label for="email" class="form-label fw-semibold">E-post</label>
+          <label for="email" class="form-label fw-semibold">E-post <span class="text-danger">*</span></label>
           <input type="email" id="email" name="email" class="form-control" value="<%= formData.email %>" required>
         </div>
 
         <div class="col-12 col-md-6">
-          <label for="phone" class="form-label fw-semibold">Telefon</label>
-          <input type="tel" id="phone" name="phone" class="form-control" value="<%= formData.phone %>" required>
+          <label for="phone" class="form-label fw-semibold">Telefon <span class="text-danger">*</span></label>
+          <input type="text" id="phone" name="phone" class="form-control" value="<%= formData.phone %>" required inputmode="numeric" pattern="[0-9]*" autocomplete="tel-national">
         </div>
 
         <div class="col-12">
@@ -56,5 +56,18 @@
     </div>
   </div>
 </div>
+
+<script>
+  const phoneInput = document.getElementById('phone');
+
+  if (phoneInput) {
+    phoneInput.addEventListener('input', function() {
+      const digitsOnly = this.value.replace(/\D+/g, '');
+      if (this.value !== digitsOnly) {
+        this.value = digitsOnly;
+      }
+    });
+  }
+</script>
 
 <%- include('partials/footer') %>
