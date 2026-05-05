@@ -23,23 +23,25 @@ function showOffertForm(req, res) {
 }
 
 function submitOffert(req, res) {
+  const phone = (req.body.phone || '').toString().trim();
   const formData = {
     productId: String(req.body.productId || '').trim(),
     name: (req.body.name || '').trim(),
     company: (req.body.company || '').trim(),
     email: (req.body.email || '').trim(),
-    phone: (req.body.phone || '').trim(),
+    phone: phone,
     message: (req.body.message || '').trim()
   };
 
   const product = formData.productId ? productModel.getProductById(formData.productId) : null;
+  const phoneIsValid = /^\d+$/.test(phone);
 
-  if (!formData.name || !formData.company || !formData.email || !formData.phone || !formData.message || !product) {
+  if (!formData.name || !formData.company || !formData.email || !formData.phone || !formData.message || !product || !phoneIsValid) {
     return res.status(400).render('offert', {
       title: 'Begär offert – AB Strut & Rån',
       product: product,
       successMessage: null,
-      errorMessage: 'Fyll i alla fält för att skicka offertförfrågan.',
+      errorMessage: phoneIsValid ? 'Fyll i alla fält för att skicka offertförfrågan.' : 'Telefonnumret får bara innehålla siffror.',
       formData: formData,
       cartCount: req.session.cart ? req.session.cart.length : 0
     });

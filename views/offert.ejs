@@ -41,7 +41,7 @@
 
         <div class="col-12 col-md-6">
           <label for="phone" class="form-label fw-semibold">Telefon <span class="text-danger">*</span></label>
-          <input type="tel" id="phone" name="phone" class="form-control" value="<%= formData.phone %>" required>
+          <input type="text" id="phone" name="phone" class="form-control" value="<%= formData.phone %>" required inputmode="numeric" pattern="[0-9]*" autocomplete="tel-national">
         </div>
 
         <div class="col-12">
@@ -56,5 +56,18 @@
     </div>
   </div>
 </div>
+
+<script>
+  const phoneInput = document.getElementById('phone');
+
+  if (phoneInput) {
+    phoneInput.addEventListener('input', function() {
+      const digitsOnly = this.value.replace(/\D+/g, '');
+      if (this.value !== digitsOnly) {
+        this.value = digitsOnly;
+      }
+    });
+  }
+</script>
 
 <%- include('partials/footer') %>

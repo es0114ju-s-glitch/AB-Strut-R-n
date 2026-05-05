@@ -131,7 +131,7 @@
             <label for="phone" class="form-label fw-semibold">Telefon *</label>
             <input type="tel" class="form-control form-control-lg" 
                    id="phone" name="phone"
-                   placeholder="040-123456" value="<%= formData.phone %>" required>
+                   placeholder="040-123456" value="<%= formData.phone %>" required inputmode="numeric" pattern="[0-9]*" autocomplete="tel-national">
           </div>
           <div class="col-12">
             <label for="message" class="form-label fw-semibold">Meddelande (valfritt)</label>
@@ -185,6 +185,17 @@
 
 <!-- JavaScript for the "same address" checkbox -->
 <script>
+  const phoneInput = document.getElementById('phone');
+
+  if (phoneInput) {
+    phoneInput.addEventListener('input', function() {
+      const digitsOnly = this.value.replace(/\D+/g, '');
+      if (this.value !== digitsOnly) {
+        this.value = digitsOnly;
+      }
+    });
+  }
+
   function toggleInvoiceAddress(checkbox) {
     const div = document.getElementById('invoiceAddressDiv');
     const invoiceStreet = document.getElementById('invoiceStreet');

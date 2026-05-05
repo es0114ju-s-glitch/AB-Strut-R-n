@@ -172,5 +172,73 @@
     "status": "Mottagen",
     "createdAt": "2026-04-16T11:56:29.962Z",
     "estimatedDelivery": "2026-04-19"
+  },
+  {
+    "orderId": "ORD-1777965874520",
+    "companyName": "Lomma",
+    "customerNumber": "100",
+    "items": [
+      {
+        "productId": 6,
+        "name": "Glassbägare 150ml",
+        "category": "Bägare",
+        "size": null,
+        "angle": null,
+        "quantity": 1,
+        "unitPrice": 35,
+        "subtotal": 35
+      }
+    ],
+    "totalPrice": 35,
+    "deliveryAddress": {
+      "street": "Seglaregatan 6",
+      "zip": "23431",
+      "city": "Lomma"
+    },
+    "invoiceAddress": {
+      "street": "Seglaregatan 6",
+      "zip": "23431",
+      "city": "Lomma"
+    },
+    "email": "thomas@glasskiosk.se",
+    "phone": "Katt",
+    "message": "",
+    "status": "Mottagen",
+    "createdAt": "2026-05-05T07:24:34.521Z",
+    "estimatedDelivery": "2026-05-08"
+  },
+  {
+    "orderId": "ORD-1777965941227",
+    "companyName": "Lomma",
+    "customerNumber": "100",
+    "items": [
+      {
+        "productId": 3,
+        "name": "Rånet – Klassisk",
+        "category": "Rån",
+        "size": "Tvåkulors",
+        "angle": "Smal",
+        "quantity": 1,
+        "unitPrice": 75,
+        "subtotal": 75
+      }
+    ],
+    "totalPrice": 75,
+    "deliveryAddress": {
+      "street": "Seglaregatan 2",
+      "zip": "23125",
+      "city": "Lomma"
+    },
+    "invoiceAddress": {
+      "street": "Seglaregatan 2",
+      "zip": "23125",
+      "city": "Lomma"
+    },
+    "email": "thomas@glasskiosk.se",
+    "phone": "katt",
+    "message": "",
+    "status": "Mottagen",
+    "createdAt": "2026-05-05T07:25:41.227Z",
+    "estimatedDelivery": "2026-05-08"
   }
 ]
