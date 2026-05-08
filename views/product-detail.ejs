@@ -158,7 +158,7 @@
           <div class="mb-4">
             <label for="quantity" class="form-label fw-semibold">Antal förpackningar</label>
             <input type="number" class="form-control" name="quantity" id="quantity"
-                   value="1" min="1" max="999" style="max-width:120px">
+                   value="1" min="1" max="<%= product.stock || 999 %>" style="max-width:120px">
           </div>
 
           <!-- Submit button — btn-lg for easier tapping on phones -->
@@ -196,11 +196,43 @@
   </div>
 <% } %>
 
+<% if (addFailed) { %>
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080">
+    <div id="addFailedToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <% if (typeof addAvailable !== 'undefined' && addAvailable !== null) { %>
+          <div class="toast-body">Önskad kvantitet överstiger lagersaldo som är <%= addAvailable %>.</div>
+        <% } else { %>
+          <div class="toast-body">Önskad kvantitet överstiger lagersaldo.</div>
+        <% } %>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+<% } %>
+
+<% if (addPartial) { %>
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080">
+    <div id="addPartialToast" class="toast align-items-center text-bg-warning border-0" role="alert" aria-live="polite" aria-atomic="true">
+      <div class="d-flex">
+        <% if (typeof addAvailable !== 'undefined' && addAvailable !== null && typeof qtyAdded !== 'undefined' && qtyAdded !== null) { %>
+          <div class="toast-body">Önskad kvantitet överstiger lagersaldo som är <%= addAvailable %>. Endast <%= qtyAdded %> lades till i kundvagnen.</div>
+        <% } else { %>
+          <div class="toast-body">Endast en del av den önskade kvantiteten kunde läggas till i kundvagnen.</div>
+        <% } %>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+<% } %>
+
 <script>
   const sizeSelect = document.getElementById('size');
   const productPriceValue = document.getElementById('product-price-value');
   const sizeStockBadge = document.getElementById('size-stock-badge');
   const addToCartBtn = document.getElementById('add-to-cart-btn');
+  const qtyInput = document.getElementById('quantity');
+  const defaultPriceText = productPriceValue ? productPriceValue.textContent.trim() : '';
 
   if (sizeSelect && sizeStockBadge) {
     function updateStockBadge() {
@@ -211,7 +243,7 @@
         sizeStockBadge.className = 'badge bg-secondary fs-6';
         sizeStockBadge.innerHTML = '<i class="bi bi-rulers me-1"></i>Välj storlek för att se lagersaldo';
         if (productPriceValue) {
-          productPriceValue.textContent = '<%= product.price.toLocaleString('sv-SE') %>';
+          productPriceValue.textContent = defaultPriceText;
         }
         if (addToCartBtn) addToCartBtn.disabled = true;
         return;
@@ -226,14 +258,17 @@
         sizeStockBadge.className = 'badge bg-danger fs-6';
         sizeStockBadge.innerHTML = '<i class="bi bi-x-circle me-1"></i>Slut i lager - ' + selectedOption.value;
         if (addToCartBtn) addToCartBtn.disabled = true;
+        if (qtyInput) qtyInput.max = 0;
       } else if (stockValue < 20) {
         sizeStockBadge.className = 'badge bg-warning text-dark fs-6';
         sizeStockBadge.innerHTML = '<i class="bi bi-exclamation-circle me-1"></i>Få kvar - ' + selectedOption.value + ' (' + stockValue + ' st)';
         if (addToCartBtn) addToCartBtn.disabled = false;
+        if (qtyInput) qtyInput.max = stockValue;
       } else {
         sizeStockBadge.className = 'badge bg-success fs-6';
         sizeStockBadge.innerHTML = '<i class="bi bi-check-circle me-1"></i>I lager - ' + selectedOption.value + ' (' + stockValue + ' st)';
         if (addToCartBtn) addToCartBtn.disabled = false;
+        if (qtyInput) qtyInput.max = stockValue;
       }
     }
 
@@ -241,11 +276,56 @@
     updateStockBadge();
   }
 
+  // Ensure quantity input respects global stock for non-size products
+  if (qtyInput && !(sizeSelect && sizeSelect.tagName)) {
+    // For standard products, set the max to product.stock (rendered server-side)
+    // The input already has a server-set max, but this keeps JS-aware behaviour consistent.
+    qtyInput.max = Number(qtyInput.getAttribute('max')) || 999;
+  }
+
   window.addEventListener('load', function() {
     const addedToast = document.getElementById('addedToast');
     if (addedToast && window.bootstrap) {
       const toast = new bootstrap.Toast(addedToast, { delay: 2600 });
       toast.show();
+    }
+    const addFailedToast = document.getElementById('addFailedToast');
+    if (addFailedToast && window.bootstrap) {
+      const t2 = new bootstrap.Toast(addFailedToast, { delay: 4000 });
+      t2.show();
+    }
+    // Fallback: if server didn't inject available/partial values, read from URL params
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const added = params.get('added');
+      const available = params.get('available');
+      const partial = params.get('partial');
+      const qtyAdded = params.get('qtyAdded');
+
+      if (added === '0' && available) {
+        const toastEl = document.getElementById('addFailedToast') || (function() {
+          const wrap = document.createElement('div'); wrap.className = 'position-fixed bottom-0 end-0 p-3'; wrap.style.zIndex = 1080;
+          wrap.innerHTML = `<div id="addFailedToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true"><div class="d-flex"><div class="toast-body"></div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div></div>`;
+          document.body.appendChild(wrap);
+          return document.getElementById('addFailedToast');
+        })();
+        toastEl.querySelector('.toast-body').textContent = `Önskad kvantitet överstiger lagersaldo som är ${available}.`;
+        if (window.bootstrap) new bootstrap.Toast(toastEl, { delay: 4000 }).show();
+      }
+
+      if (partial === '1' && available) {
+        const toastEl = document.getElementById('addPartialToast') || (function() {
+          const wrap = document.createElement('div'); wrap.className = 'position-fixed bottom-0 end-0 p-3'; wrap.style.zIndex = 1080;
+          wrap.innerHTML = `<div id="addPartialToast" class="toast align-items-center text-bg-warning border-0" role="alert" aria-live="polite" aria-atomic="true"><div class="d-flex"><div class="toast-body"></div><button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div></div>`;
+          document.body.appendChild(wrap);
+          return document.getElementById('addPartialToast');
+        })();
+        const addedText = qtyAdded ? ` Endast ${qtyAdded} lades till i kundvagnen.` : '';
+        toastEl.querySelector('.toast-body').textContent = `Önskad kvantitet överstiger lagersaldo som är ${available}.${addedText}`;
+        if (window.bootstrap) new bootstrap.Toast(toastEl, { delay: 4000 }).show();
+      }
+    } catch (e) {
+      // ignore
     }
   });
 </script>
