@@ -72,6 +72,14 @@ function addToCart(req, res) {
     unitPrice = selectedSizePrice;
   }
 
+  // Determine available stock for this product/size and cap the added quantity
+  let available = 0;
+  if (product.category === 'Strutar' && product.stockPerSize && size) {
+    available = Number(product.stockPerSize[size] || 0);
+  } else {
+    available = Number(product.stock || 0);
+  }
+
   const subtotal = unitPrice * qty;
 
   // Build a cart item object — includes only what we need to display
@@ -94,16 +102,35 @@ function addToCart(req, res) {
     item.angle === cartItem.angle
   );
 
+  // If this item already exists in the cart, respect its current quantity
+  const existingQty = existingIndex >= 0 ? Number(req.session.cart[existingIndex].quantity || 0) : 0;
+  const allowedToAdd = Math.max(0, available - existingQty);
+  const qtyToAdd = Math.min(qty, allowedToAdd);
+
+  if (qtyToAdd <= 0) {
+    // Nothing can be added — redirect back with a failure flag and current stock
+    return res.redirect('/products/' + product.id + '?added=0&available=' + encodeURIComponent(available));
+  }
+
+  // Adjust cart item values to the actual quantity being added
+  cartItem.quantity = qtyToAdd;
+  cartItem.subtotal = unitPrice * qtyToAdd;
+
   if (existingIndex >= 0) {
     // Update existing cart item
-    req.session.cart[existingIndex].quantity += qty;
-    req.session.cart[existingIndex].subtotal += subtotal;
+    req.session.cart[existingIndex].quantity += qtyToAdd;
+    req.session.cart[existingIndex].subtotal += cartItem.subtotal;
   } else {
     // Add new cart item
     req.session.cart.push(cartItem);
   }
 
   // Better UX: user can continue browsing instead of being forced to the cart every time
+  // If we couldn't add the full requested qty, include partial info so the UI can warn the user.
+  if (qtyToAdd < qty) {
+    return res.redirect('/products/' + product.id + '?added=1&partial=1&available=' + encodeURIComponent(available) + '&qtyAdded=' + encodeURIComponent(qtyToAdd));
+  }
+
   res.redirect('/products/' + product.id + '?added=1');
 }
 
@@ -350,7 +377,17 @@ function reorder(req, res) {
     category: item.category,
     size: item.size || null,
     angle: item.angle || null,
-    quantity: item.quantity,
+    // Cap quantity to current stock when re-ordering
+    quantity: (function() {
+      const p = productModel.getProductById(item.productId) || {};
+      let available = 0;
+      if (p.category === 'Strutar' && p.stockPerSize && item.size) {
+        available = Number(p.stockPerSize[item.size] || 0);
+      } else {
+        available = Number(p.stock || 0);
+      }
+      return Math.min(Number(item.quantity || 0), Math.max(0, available));
+    })(),
     unitPrice: item.unitPrice,
     subtotal: item.subtotal
   }));

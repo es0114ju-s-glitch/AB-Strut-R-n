@@ -44,6 +44,10 @@ function showProductDetail(req, res) {
     title: `${product.name} – AB Strut & Rån`,
     product: product,
     addedToCart: req.query.added === '1',
+    addFailed: req.query.added === '0',
+    addAvailable: typeof req.query.available !== 'undefined' ? Number(req.query.available) : null,
+    addPartial: req.query.partial === '1',
+    qtyAdded: typeof req.query.qtyAdded !== 'undefined' ? Number(req.query.qtyAdded) : null,
     cartCount: req.session.cart ? req.session.cart.length : 0
   });
 }
